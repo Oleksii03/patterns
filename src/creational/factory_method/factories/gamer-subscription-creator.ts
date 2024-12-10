@@ -1,9 +1,9 @@
 import { Subscription } from '../interfaces/subscription';
 import { SubscriptionCreator } from './subscription-creator';
-import { PremiumSubscription } from '../classes/premium-subscription';
+import { GamerSubscription } from '../classes/gamer-subscription';
 
-export class PremiumSubscriptionCreator extends SubscriptionCreator {
+export class GamerSubscriptionCreator extends SubscriptionCreator {
   public createSubscription(): Subscription {
-    return new PremiumSubscription();
+    return new GamerSubscription();
   }
 }

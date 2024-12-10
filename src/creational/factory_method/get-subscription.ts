@@ -1,6 +1,6 @@
 import { SubscriptionCreator } from './factories/subscription-creator';
-import { GamerSubscriptionCreator } from './factories/premium-subscription-creator';
-import { PremiumSubscriptionCreator } from './factories/gamer-subscription-creator';
+import { GamerSubscriptionCreator } from './factories/gamer-subscription-creator';
+import { PremiumSubscriptionCreator } from './factories/premium-subscription-creator';
 
 function getSubscripton(creator: SubscriptionCreator) {
   console.log(creator.manageSubscription());
