@@ -22,7 +22,6 @@ import './creational/creational';
 
 //   public manageSubscription(): string {
 //     const subscription = this.createSubscription();
-//     console.log(subscription);
 
 //     return `Managing a ${subscription.operation()} subscription`;
 //   }
@@ -42,8 +41,6 @@ import './creational/creational';
 
 // const gamerSubscriptionCreator = new GamerSubscriptionCreator();
 // console.log(gamerSubscriptionCreator.manageSubscription());
-
-// // --------------
 
 // const premiumSubscriptionCreator = new PremiumSubscriptionCreator();
 // console.log(premiumSubscriptionCreator.manageSubscription());
