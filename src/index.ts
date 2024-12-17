@@ -1,4 +1,4 @@
-import './creational/creational';
+// import './creational/creational';
 // ------------------------------------
 
 // ==================factory-method=========================
@@ -94,7 +94,7 @@ import './creational/creational';
 // // Перевірка того, що екземпляри є однаковими
 // console.log(apiManager1 === apiManager2); // Виведе: true
 
-// ================================================================
+// =================builder===============================================
 // Інтерфейс будівельника
 // interface HouseBuilder {
 //   setWalls(walls: string): this;
@@ -142,3 +142,73 @@ import './creational/creational';
 // // Використання
 // const builder = new Builder();
 // const house1 = builder.setWalls('Brick walls').build();
+
+// -------
+
+interface FlowerBouquetBuilder {
+  setFlowerType(flowerType: string): this;
+  setQuantity(quantity: number): this;
+  setColor(color: string): this;
+  setNeedsWrapping(needsWrapping: boolean): this;
+  build(): FlowerBouquet;
+}
+class FlowerBouquet {
+  public flowerType?: string;
+  public quantity?: number;
+  public color?: string;
+  public needsWrapping?: boolean;
+
+  public describe(): void {
+    console.log(
+      `Bouquet details:\nFlower Type: ${this.flowerType}\nQuantity: ${this.quantity}\nColor: ${this.color}\nNeeds Wrapping: ${this.needsWrapping}`
+    );
+  }
+}
+class FlowerBouquetBuilderImpl implements FlowerBouquetBuilder {
+  private bouquet: FlowerBouquet;
+
+  constructor() {
+    this.bouquet = new FlowerBouquet();
+  }
+
+  public setFlowerType(flowerType: string): this {
+    this.bouquet.flowerType = flowerType;
+    return this;
+  }
+
+  public setQuantity(quantity: number): this {
+    this.bouquet.quantity = quantity;
+    return this;
+  }
+
+  public setColor(color: string): this {
+    this.bouquet.color = color;
+    return this;
+  }
+
+  public setNeedsWrapping(needsWrapping: boolean): this {
+    this.bouquet.needsWrapping = needsWrapping;
+    return this;
+  }
+
+  public build(): FlowerBouquet {
+    const result = this.bouquet;
+    this.reset();
+    return result;
+  }
+
+  private reset(): void {
+    this.bouquet = new FlowerBouquet();
+  }
+}
+
+const builder = new FlowerBouquetBuilderImpl();
+
+const bouquetRoses = builder
+  .setFlowerType('Roses')
+  .setQuantity(12)
+  .setColor('Red')
+  .setNeedsWrapping(true)
+  .build();
+
+bouquetRoses.describe();
