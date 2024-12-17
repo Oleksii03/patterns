@@ -1,6 +1,7 @@
 import './creational/creational';
-// ----------------------------------
+// ------------------------------------
 
+// ==================factory-method=========================
 // interface Subscription {
 //   operation(): string;
 // }
@@ -45,8 +46,7 @@ import './creational/creational';
 // const premiumSubscriptionCreator = new PremiumSubscriptionCreator();
 // console.log(premiumSubscriptionCreator.manageSubscription());
 
-// ----------singleton-------------------------------------------
-
+// =====================singleton==============================
 // interface ApiResponse {
 //   id: number;
 //   name: string;
@@ -94,4 +94,51 @@ import './creational/creational';
 // // Перевірка того, що екземпляри є однаковими
 // console.log(apiManager1 === apiManager2); // Виведе: true
 
-// ------------------------------------------
+// ================================================================
+// Інтерфейс будівельника
+// interface HouseBuilder {
+//   setWalls(walls: string): this;
+//   build(): House;
+// }
+
+// // Клас продукту
+// class House {
+//   public walls?: string;
+
+//   public describe(): void {
+//     console.log(`House details:\nWalls: ${this.walls}`);
+//   }
+// }
+
+// // Реалізація будівельника-----------------------
+// class Builder implements HouseBuilder {
+//   private house: House;
+
+//   constructor() {
+//     this.house = new House();
+//   }
+
+//   public setWalls(walls: string): this {
+//     this.house.walls = walls;
+
+//     return this;
+//   }
+
+//   public build(): House {
+//     const result = this.house;
+//     // console.log(result);
+//     this.reset(); // Підготовка для нового будівництва
+
+//     return result;
+//   }
+
+//   private reset(): void {
+//     console.log(this.house);
+//     this.house = new House();
+//     console.log(this.house);
+//   }
+// }
+
+// // Використання
+// const builder = new Builder();
+// const house1 = builder.setWalls('Brick walls').build();
