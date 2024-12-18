@@ -95,120 +95,93 @@
 // console.log(apiManager1 === apiManager2); // Виведе: true
 
 // =================builder===============================================
-// Інтерфейс будівельника
-// interface HouseBuilder {
-//   setWalls(walls: string): this;
-//   build(): House;
+// interface FlowerBouquetBuilder {
+//   setFlowerType(flowerType: string): this;
+//   setQuantity(quantity: number): this;
+//   setColor(color: string): this;
+//   setNeedsWrapping(needsWrapping: boolean): this;
+//   build(): FlowerBouquet;
 // }
-
-// // Клас продукту
-// class House {
-//   public walls?: string;
+// class FlowerBouquet {
+//   public flowerType?: string;
+//   public quantity?: number;
+//   public color?: string;
+//   public needsWrapping?: boolean;
 
 //   public describe(): void {
-//     console.log(`House details:\nWalls: ${this.walls}`);
+//     console.log(
+//       `Bouquet details:\nFlower Type: ${this.flowerType}\nQuantity: ${this.quantity}\nColor: ${this.color}\nNeeds Wrapping: ${this.needsWrapping}`
+//     );
 //   }
 // }
-
-// // Реалізація будівельника-----------------------
-// class Builder implements HouseBuilder {
-//   private house: House;
+// class FlowerBouquetBuilderImpl implements FlowerBouquetBuilder {
+//   private bouquet: FlowerBouquet;
 
 //   constructor() {
-//     this.house = new House();
+//     this.bouquet = new FlowerBouquet();
 //   }
 
-//   public setWalls(walls: string): this {
-//     this.house.walls = walls;
-
+//   public setFlowerType(flowerType: string): this {
+//     this.bouquet.flowerType = flowerType;
 //     return this;
 //   }
 
-//   public build(): House {
-//     const result = this.house;
-//     // console.log(result);
-//     this.reset(); // Підготовка для нового будівництва
+//   public setQuantity(quantity: number): this {
+//     this.bouquet.quantity = quantity;
+//     return this;
+//   }
 
+//   public setColor(color: string): this {
+//     this.bouquet.color = color;
+//     return this;
+//   }
+
+//   public setNeedsWrapping(needsWrapping: boolean): this {
+//     this.bouquet.needsWrapping = needsWrapping;
+//     return this;
+//   }
+
+//   public build(): FlowerBouquet {
+//     const result = this.bouquet;
+//     this.reset();
 //     return result;
 //   }
 
 //   private reset(): void {
-//     console.log(this.house);
-//     this.house = new House();
-//     console.log(this.house);
+//     this.bouquet = new FlowerBouquet();
 //   }
 // }
 
-// // Використання
-// const builder = new Builder();
-// const house1 = builder.setWalls('Brick walls').build();
+// Приклад використання
+// const builder = new FlowerBouquetBuilderImpl();
 
-// -------
+// const bouquetRoses = builder
+//   .setFlowerType('Roses')
+//   .setQuantity(12)
+//   .setColor('Red')
+//   .setNeedsWrapping(true)
+//   .build();
 
-interface FlowerBouquetBuilder {
-  setFlowerType(flowerType: string): this;
-  setQuantity(quantity: number): this;
-  setColor(color: string): this;
-  setNeedsWrapping(needsWrapping: boolean): this;
-  build(): FlowerBouquet;
-}
-class FlowerBouquet {
-  public flowerType?: string;
-  public quantity?: number;
-  public color?: string;
-  public needsWrapping?: boolean;
+// bouquetRoses.describe();
 
-  public describe(): void {
-    console.log(
-      `Bouquet details:\nFlower Type: ${this.flowerType}\nQuantity: ${this.quantity}\nColor: ${this.color}\nNeeds Wrapping: ${this.needsWrapping}`
-    );
-  }
-}
-class FlowerBouquetBuilderImpl implements FlowerBouquetBuilder {
-  private bouquet: FlowerBouquet;
+// ==========prototype=====================================================
+class RoseBouquet {
+  constructor(
+    public quantity: number,
+    public color: string,
+    public needsWrapping: boolean
+  ) {}
 
-  constructor() {
-    this.bouquet = new FlowerBouquet();
-  }
-
-  public setFlowerType(flowerType: string): this {
-    this.bouquet.flowerType = flowerType;
-    return this;
-  }
-
-  public setQuantity(quantity: number): this {
-    this.bouquet.quantity = quantity;
-    return this;
-  }
-
-  public setColor(color: string): this {
-    this.bouquet.color = color;
-    return this;
-  }
-
-  public setNeedsWrapping(needsWrapping: boolean): this {
-    this.bouquet.needsWrapping = needsWrapping;
-    return this;
-  }
-
-  public build(): FlowerBouquet {
-    const result = this.bouquet;
-    this.reset();
-    return result;
-  }
-
-  private reset(): void {
-    this.bouquet = new FlowerBouquet();
+  clone(): RoseBouquet {
+    return new RoseBouquet(this.quantity, this.color, this.needsWrapping);
   }
 }
 
-const builder = new FlowerBouquetBuilderImpl();
+// Приклад використання
+const originalBouquet = new RoseBouquet(12, 'Red', true);
 
-const bouquetRoses = builder
-  .setFlowerType('Roses')
-  .setQuantity(12)
-  .setColor('Red')
-  .setNeedsWrapping(true)
-  .build();
+const newBouquet = originalBouquet.clone();
+newBouquet.quantity = 24;
 
-bouquetRoses.describe();
+console.log(originalBouquet);
+console.log(newBouquet);
