@@ -214,13 +214,17 @@ class RoseBouquet implements Bouquet {
     this.needsWrapping = needsWrapping;
   }
 
-  public clone(): RoseBouquet {
+  public clone(): Bouquet {
     return new RoseBouquet(this.quantity, this.color, this.needsWrapping);
   }
 }
 
 // Приклад використання
-const originalBouquet = new RoseBouquet(12, 'Red', true);
+const originalBouquet: Bouquet = new RoseBouquet(12, 'Red', true);
 const newBouquet = originalBouquet.clone();
 
 newBouquet.setQuantity(24);
+newBouquet.setColor('yellow');
+
+console.log(originalBouquet);
+console.log(newBouquet);
