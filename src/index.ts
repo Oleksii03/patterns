@@ -165,23 +165,62 @@
 // bouquetRoses.describe();
 
 // ==========prototype=====================================================
-class RoseBouquet {
+// class RoseBouquet {
+//   constructor(
+//     public quantity: number,
+//     public color: string,
+//     public needsWrapping: boolean
+//   ) {}
+
+//   clone(): RoseBouquet {
+//     return new RoseBouquet(this.quantity, this.color, this.needsWrapping);
+//   }
+// }
+
+// // Приклад використання
+// const originalBouquet = new RoseBouquet(12, 'Red', true);
+
+// const newBouquet = originalBouquet.clone();
+// newBouquet.quantity = 24;
+
+// console.log(originalBouquet);
+// console.log(newBouquet);
+
+// -------------var-2----------------------------------------------------
+
+interface Bouquet {
+  setQuantity(quantity: number): void;
+  setColor(color: string): void;
+  setNeedsWrapping(needsWrapping: boolean): void;
+  clone(): Bouquet;
+}
+
+class RoseBouquet implements Bouquet {
   constructor(
-    public quantity: number,
-    public color: string,
-    public needsWrapping: boolean
+    private quantity: number,
+    private color: string,
+    private needsWrapping: boolean
   ) {}
 
-  clone(): RoseBouquet {
+  public setQuantity(quantity: number): void {
+    this.quantity = quantity;
+  }
+
+  public setColor(color: string): void {
+    this.color = color;
+  }
+
+  public setNeedsWrapping(needsWrapping: boolean): void {
+    this.needsWrapping = needsWrapping;
+  }
+
+  public clone(): RoseBouquet {
     return new RoseBouquet(this.quantity, this.color, this.needsWrapping);
   }
 }
 
 // Приклад використання
 const originalBouquet = new RoseBouquet(12, 'Red', true);
-
 const newBouquet = originalBouquet.clone();
-newBouquet.quantity = 24;
 
-console.log(originalBouquet);
-console.log(newBouquet);
+newBouquet.setQuantity(24);
