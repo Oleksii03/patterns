@@ -152,7 +152,7 @@
 //   }
 // }
 
-// Приклад використання
+// // Приклад використання
 // const builder = new FlowerBouquetBuilderImpl();
 
 // const bouquetRoses = builder
@@ -188,43 +188,125 @@
 
 // -------------var-2----------------------------------------------------
 
-interface Bouquet {
-  setQuantity(quantity: number): void;
-  setColor(color: string): void;
-  setNeedsWrapping(needsWrapping: boolean): void;
-  clone(): Bouquet;
+// interface Bouquet {
+//   setQuantity(quantity: number): void;
+//   setColor(color: string): void;
+//   setNeedsWrapping(needsWrapping: boolean): void;
+//   clone(): Bouquet;
+// }
+
+// class RoseBouquet implements Bouquet {
+//   constructor(
+//     private quantity: number,
+//     private color: string,
+//     private needsWrapping: boolean
+//   ) {}
+
+//   public setQuantity(quantity: number): void {
+//     this.quantity = quantity;
+//   }
+
+//   public setColor(color: string): void {
+//     this.color = color;
+//   }
+
+//   public setNeedsWrapping(needsWrapping: boolean): void {
+//     this.needsWrapping = needsWrapping;
+//   }
+
+//   public clone(): Bouquet {
+//     return new RoseBouquet(this.quantity, this.color, this.needsWrapping);
+//   }
+// }
+
+// // Приклад використання
+// const originalBouquet: Bouquet = new RoseBouquet(12, 'Red', true);
+// const newBouquet = originalBouquet.clone();
+
+// newBouquet.setQuantity(24);
+// newBouquet.setColor('yellow');
+
+// console.log(originalBouquet);
+// console.log(newBouquet);
+
+// ==========abstract-factory===================================
+// Інтерфейси для продуктів
+interface ElectricMoped {
+  start(): string;
 }
 
-class RoseBouquet implements Bouquet {
-  constructor(
-    private quantity: number,
-    private color: string,
-    private needsWrapping: boolean
-  ) {}
+interface GasolineMoped {
+  start(): string;
+}
 
-  public setQuantity(quantity: number): void {
-    this.quantity = quantity;
-  }
-
-  public setColor(color: string): void {
-    this.color = color;
-  }
-
-  public setNeedsWrapping(needsWrapping: boolean): void {
-    this.needsWrapping = needsWrapping;
-  }
-
-  public clone(): Bouquet {
-    return new RoseBouquet(this.quantity, this.color, this.needsWrapping);
+// Реалізації для стилю Futuristic
+class FuturisticElectricMoped implements ElectricMoped {
+  start(): string {
+    return 'Стартую на футуристичному електромопеді Альфа';
   }
 }
 
-// Приклад використання
-const originalBouquet: Bouquet = new RoseBouquet(12, 'Red', true);
-const newBouquet = originalBouquet.clone();
+class FuturisticGasolineMoped implements GasolineMoped {
+  start(): string {
+    return 'Стартую на футуристичному бензиновому мопеді Альфа';
+  }
+}
 
-newBouquet.setQuantity(24);
-newBouquet.setColor('yellow');
+// Реалізації для стилю Retro
+class RetroElectricMoped implements ElectricMoped {
+  start(): string {
+    return 'Стартую на ретро електромопеді Альфа';
+  }
+}
 
-console.log(originalBouquet);
-console.log(newBouquet);
+class RetroGasolineMoped implements GasolineMoped {
+  start(): string {
+    return 'Стартую на ретро бензиновому мопеді Альфа';
+  }
+}
+
+// Абстрактна фабрика
+interface MopedFactory {
+  createElectricMoped(): ElectricMoped;
+  createGasolineMoped(): GasolineMoped;
+}
+
+// Фабрика для Futuristic стилю
+class FuturisticMopedFactory implements MopedFactory {
+  createElectricMoped(): ElectricMoped {
+    return new FuturisticElectricMoped();
+  }
+
+  createGasolineMoped(): GasolineMoped {
+    return new FuturisticGasolineMoped();
+  }
+}
+
+// Фабрика для Retro стилю
+class RetroMopedFactory implements MopedFactory {
+  createElectricMoped(): ElectricMoped {
+    return new RetroElectricMoped();
+  }
+
+  createGasolineMoped(): GasolineMoped {
+    return new RetroGasolineMoped();
+  }
+}
+
+// Клієнтський код
+function clientCode(factory: MopedFactory) {
+  const electricMoped = factory.createElectricMoped();
+  const gasolineMoped = factory.createGasolineMoped();
+
+  console.log(electricMoped.start());
+  console.log(gasolineMoped.start());
+}
+
+// Використання
+const futuristicMopedFactory = new FuturisticMopedFactory();
+console.log('Futuristic Mopeds:');
+clientCode(futuristicMopedFactory);
+
+const retroMopedFactory = new RetroMopedFactory();
+console.log('\nRetro Mopeds:');
+clientCode(retroMopedFactory);

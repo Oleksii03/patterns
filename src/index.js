@@ -51,26 +51,26 @@
 // let count = 0;
 
 // function binarySearch(array, item) {
-//   let start = 0;
-//   let end = array.length;
-//   let middle;
+//   let low = 0;
+//   let high = array.length;
+//   let mid;
 //   let found = false;
 //   let position = -1;
 
-//   while (start <= end && !found) {
+//   while (low <= high && !found) {
 //     count += 1;
-//     middle = Math.floor((start + end) / 2);
+//     mid = Math.floor((low + high) / 2);
 
-//     if (array[middle] === item) {
+//     if (array[mid] === item) {
 //       found = true;
-//       position = middle;
+//       position = mid;
 //       return position;
 //     }
 
-//     if (array[middle] < item) {
-//       start = middle + 1;
+//     if (array[mid] < item) {
+//       low = mid + 1;
 //     } else {
-//       end = middle - 1;
+//       high = mid - 1;
 //     }
 //   }
 
@@ -78,3 +78,133 @@
 // }
 
 // console.log(binarySearch(array, 7), `step = ${count}`);
+
+// ------------------------------------------------
+
+// const users = [
+//   {
+//     id: 1,
+//     name: 'Святослав',
+//     age: 25,
+//     email: 'svyatoslav@example.com',
+//     city: 'Київ',
+//     friends: [2, 3, 4],
+//   },
+//   {
+//     id: 2,
+//     name: 'Злата',
+//     age: 32,
+//     email: 'vlada@example.com',
+//     city: 'Київ',
+//     friends: [1, 5, 6, 8],
+//   },
+//   {
+//     id: 3,
+//     name: 'Дима',
+//     age: 28,
+//     email: 'dima@example.com',
+//     city: 'Київ',
+//     friends: [],
+//   },
+//   {
+//     id: 4,
+//     name: 'Алексей',
+//     age: 35,
+//     email: 'maxim@example.com',
+//     city: 'Харків',
+//     friends: [1, 2, 3, 4, 5, 6],
+//   },
+//   {
+//     id: 5,
+//     name: 'Сергей',
+//     age: 29,
+//     email: 'vlad@example.com',
+//     city: 'Харків',
+//     friends: [2, 3, 4],
+//   },
+//   {
+//     id: 6,
+//     name: 'Артём',
+//     age: 41,
+//     email: 'artem@example.com',
+//     city: 'Харків',
+//     friends: [2, 3, 4, 5],
+//   },
+//   {
+//     id: 7,
+//     name: 'Андрей',
+//     age: 36,
+//     email: 'andrey@example.com',
+//     city: 'Херсон',
+//     friends: [2, 3, 4, 5, 7],
+//   },
+//   {
+//     id: 8,
+//     name: 'Родион',
+//     age: 45,
+//     email: 'denis@example.com',
+//     city: 'Херсон',
+//     friends: [],
+//   },
+//   {
+//     id: 9,
+//     name: 'Іван',
+//     age: 27,
+//     email: 'ivan@example.com',
+//     city: 'Херсон',
+//     friends: [],
+//   },
+//   {
+//     id: 10,
+//     name: 'Марія',
+//     age: 31,
+//     email: 'maria@example.com',
+//     city: 'Рівне',
+//     friends: [],
+//   },
+// ];
+
+// const userThree = users;
+
+// const newUsers = users.reduce((acc, item, index) => {
+//   const arr = item.friends;
+
+//   const friend = item.friends.filter(id => {
+//     if (id !== item.id) {
+//       return id;
+//     }
+
+//     const newArr = users.filter(us => {
+//       if (!us.friends.length) {
+//         return true;
+//       }
+
+//       return false;
+//     });
+
+//     const randomUser = newArr[Math.round(Math.random() * newArr.length)];
+
+//     console.log(randomUser.friends);
+
+//     randomUser.friends.push(id);
+
+//     userThree.map(user => {
+//       if (user.id === randomUser.id) {
+//         return randomUser;
+//       }
+//     });
+
+//     randomUser.map(el => {
+//       console.log(el);
+//     });
+//     console.log(randomUser);
+//   });
+
+//   item.friends = friend;
+
+//   acc.push(item);
+
+//   return acc;
+// }, []);
+
+// console.log(userThree);
