@@ -1,4 +1,5 @@
 // import './creational/creational';
+// import './structural/structural';
 // ------------------------------------
 
 // ==================factory-method=========================
@@ -230,83 +231,114 @@
 // console.log(newBouquet);
 
 // ==========abstract-factory===================================
-// Інтерфейси для продуктів
-interface ElectricMoped {
-  start(): string;
+// // Інтерфейси для продуктів
+// interface ElectricMoped {
+//   start(): string;
+// }
+
+// interface GasolineMoped {
+//   start(): string;
+// }
+
+// // Реалізації для стилю Futuristic
+// class FuturisticElectricMoped implements ElectricMoped {
+//   start(): string {
+//     return 'Стартую на футуристичному електромопеді Альфа';
+//   }
+// }
+
+// class FuturisticGasolineMoped implements GasolineMoped {
+//   start(): string {
+//     return 'Стартую на футуристичному бензиновому мопеді Альфа';
+//   }
+// }
+
+// // Реалізації для стилю Retro
+// class RetroElectricMoped implements ElectricMoped {
+//   start(): string {
+//     return 'Стартую на ретро електромопеді Альфа';
+//   }
+// }
+
+// class RetroGasolineMoped implements GasolineMoped {
+//   start(): string {
+//     return 'Стартую на ретро бензиновому мопеді Альфа';
+//   }
+// }
+
+// // Абстрактна фабрика
+// interface MopedFactory {
+//   createElectricMoped(): ElectricMoped;
+//   createGasolineMoped(): GasolineMoped;
+// }
+
+// // Фабрика для Futuristic стилю
+// class FuturisticMopedFactory implements MopedFactory {
+//   createElectricMoped(): ElectricMoped {
+//     return new FuturisticElectricMoped();
+//   }
+
+//   createGasolineMoped(): GasolineMoped {
+//     return new FuturisticGasolineMoped();
+//   }
+// }
+
+// // Фабрика для Retro стилю
+// class RetroMopedFactory implements MopedFactory {
+//   createElectricMoped(): ElectricMoped {
+//     return new RetroElectricMoped();
+//   }
+
+//   createGasolineMoped(): GasolineMoped {
+//     return new RetroGasolineMoped();
+//   }
+// }
+
+// // Клієнтський код
+// function clientCode(factory: MopedFactory) {
+//   const electricMoped = factory.createElectricMoped();
+//   const gasolineMoped = factory.createGasolineMoped();
+
+//   console.log(electricMoped.start());
+//   console.log(gasolineMoped.start());
+// }
+
+// // Використання
+// const futuristicMopedFactory = new FuturisticMopedFactory();
+// console.log('Futuristic Mopeds:');
+// clientCode(futuristicMopedFactory);
+
+// const retroMopedFactory = new RetroMopedFactory();
+// console.log('\nRetro Mopeds:');
+// clientCode(retroMopedFactory);
+
+// ==============================================================
+interface PcGame {
+  launch(): string;
 }
 
-interface GasolineMoped {
-  start(): string;
-}
-
-// Реалізації для стилю Futuristic
-class FuturisticElectricMoped implements ElectricMoped {
-  start(): string {
-    return 'Стартую на футуристичному електромопеді Альфа';
+// Клас, що описує стару гру для приставки
+class ConsoleGame {
+  startOnConsole(): string {
+    return 'Гра для старої приставки.';
   }
 }
 
-class FuturisticGasolineMoped implements GasolineMoped {
-  start(): string {
-    return 'Стартую на футуристичному бензиновому мопеді Альфа';
-  }
-}
+// Адаптер, який дозволяє запустити гру на ПК
+class ConsoleToPcAdapter implements PcGame {
+  private readonly consoleGame: ConsoleGame;
 
-// Реалізації для стилю Retro
-class RetroElectricMoped implements ElectricMoped {
-  start(): string {
-    return 'Стартую на ретро електромопеді Альфа';
-  }
-}
-
-class RetroGasolineMoped implements GasolineMoped {
-  start(): string {
-    return 'Стартую на ретро бензиновому мопеді Альфа';
-  }
-}
-
-// Абстрактна фабрика
-interface MopedFactory {
-  createElectricMoped(): ElectricMoped;
-  createGasolineMoped(): GasolineMoped;
-}
-
-// Фабрика для Futuristic стилю
-class FuturisticMopedFactory implements MopedFactory {
-  createElectricMoped(): ElectricMoped {
-    return new FuturisticElectricMoped();
+  constructor(consoleGame: ConsoleGame) {
+    this.consoleGame = consoleGame;
   }
 
-  createGasolineMoped(): GasolineMoped {
-    return new FuturisticGasolineMoped();
+  launch(): string {
+    return `${this.consoleGame.startOnConsole()} (адаптовано для запуску на ПК)`;
   }
-}
-
-// Фабрика для Retro стилю
-class RetroMopedFactory implements MopedFactory {
-  createElectricMoped(): ElectricMoped {
-    return new RetroElectricMoped();
-  }
-
-  createGasolineMoped(): GasolineMoped {
-    return new RetroGasolineMoped();
-  }
-}
-
-// Клієнтський код
-function clientCode(factory: MopedFactory) {
-  const electricMoped = factory.createElectricMoped();
-  const gasolineMoped = factory.createGasolineMoped();
-
-  console.log(electricMoped.start());
-  console.log(gasolineMoped.start());
 }
 
 // Використання
-const futuristicMopedFactory = new FuturisticMopedFactory();
-console.log('Futuristic Mopeds:');
-clientCode(futuristicMopedFactory);
+const consoleGame = new ConsoleGame();
+const pcGameAdapter = new ConsoleToPcAdapter(consoleGame);
 
-const retroMopedFactory = new RetroMopedFactory();
-console.log('\nRetro Mopeds:');
-clientCode(retroMopedFactory);
+console.log(pcGameAdapter.launch());
