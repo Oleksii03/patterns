@@ -164,47 +164,34 @@
 //   },
 // ];
 
-// const userThree = users;
+// const newUsers = users.reduce((acc, user, i, arr) => {
+//   const noFriends = arr.filter(us => !us.friends.length);
+//   // --------var 2---------------------
+//   // const randomUser = noFriends[Math.round(Math.random() * noFriends.length)];
 
-// const newUsers = users.reduce((acc, item, index) => {
-//   const arr = item.friends;
+//   // if (user.friends.length && randomUser) {
+//   //   if (!user.friends.includes(randomUser.id)) {
+//   //     const newUser = { ...user, friends: [...user.friends, randomUser.id] };
+//   //     acc.push(newUser);
+//   //   }
+//   // }
+//   // --------var 1---------------------
+//   const hasFriends = arr.filter(us => us.friends.length);
+//   const randomrWithoutFriends = noFriends[Math.round(Math.random() * noFriends.length)];
+//   const randomrFromFriends = hasFriends[Math.round(Math.random() * hasFriends.length)];
 
-//   const friend = item.friends.filter(id => {
-//     if (id !== item.id) {
-//       return id;
-//     }
+//   if (randomrWithoutFriends && randomrFromFriends) {
+//     console.log();
+//     const newUser = {
+//       ...randomrWithoutFriends,
+//       friends: [...randomrWithoutFriends.friends, randomrFromFriends.id],
+//     };
 
-//     const newArr = users.filter(us => {
-//       if (!us.friends.length) {
-//         return true;
-//       }
-
-//       return false;
-//     });
-
-//     const randomUser = newArr[Math.round(Math.random() * newArr.length)];
-
-//     console.log(randomUser.friends);
-
-//     randomUser.friends.push(id);
-
-//     userThree.map(user => {
-//       if (user.id === randomUser.id) {
-//         return randomUser;
-//       }
-//     });
-
-//     randomUser.map(el => {
-//       console.log(el);
-//     });
-//     console.log(randomUser);
-//   });
-
-//   item.friends = friend;
-
-//   acc.push(item);
+//     acc.push(newUser);
+//   }
 
 //   return acc;
 // }, []);
 
-// console.log(userThree);
+// console.log(newUsers);
+// console.log(users);
