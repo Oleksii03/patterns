@@ -231,7 +231,7 @@
 // console.log(newBouquet);
 
 // ==========abstract-factory===================================
-// // Інтерфейси для продуктів
+// Інтерфейси для продуктів
 // interface ElectricMoped {
 //   start(): string;
 // }
