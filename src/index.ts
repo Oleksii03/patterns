@@ -312,33 +312,115 @@
 // console.log('\nRetro Mopeds:');
 // clientCode(retroMopedFactory);
 
-// ==============================================================
-interface PcGame {
-  launch(): string;
+// ==============adapter=========================================
+// interface PcGame {
+//   launch(): string;
+// }
+
+// // Клас, що описує стару гру для приставки
+// class ConsoleGame {
+//   startOnConsole(): string {
+//     return 'Гра для старої приставки.';
+//   }
+// }
+
+// // Адаптер, який дозволяє запустити гру на ПК
+// class ConsoleToPcAdapter implements PcGame {
+//   private readonly consoleGame: ConsoleGame;
+
+//   constructor(consoleGame: ConsoleGame) {
+//     this.consoleGame = consoleGame;
+//   }
+
+//   launch(): string {
+//     return `${this.consoleGame.startOnConsole()} (адаптовано для запуску на ПК)`;
+//   }
+// }
+
+// // Використання
+// const consoleGame = new ConsoleGame();
+// const pcGameAdapter = new ConsoleToPcAdapter(consoleGame);
+
+// console.log(pcGameAdapter.launch());
+
+// =========decorator===========================================
+// Базовий інтерфейс
+interface Player {
+  getStats(): string;
+  getProtectionLevel(): number;
 }
 
-// Клас, що описує стару гру для приставки
-class ConsoleGame {
-  startOnConsole(): string {
-    return 'Гра для старої приставки.';
+// Конкретний компонент: базовий герой
+class BasicPlayer implements Player {
+  getStats(): string {
+    return 'Player: Basic equipment';
+  }
+
+  getProtectionLevel(): number {
+    return 0; // Початковий рівень захисту
   }
 }
 
-// Адаптер, який дозволяє запустити гру на ПК
-class ConsoleToPcAdapter implements PcGame {
-  private readonly consoleGame: ConsoleGame;
+// Базовий декоратор
+class PlayerDecorator implements Player {
+  protected player: Player;
 
-  constructor(consoleGame: ConsoleGame) {
-    this.consoleGame = consoleGame;
+  constructor(player: Player) {
+    this.player = player;
   }
 
-  launch(): string {
-    return `${this.consoleGame.startOnConsole()} (адаптовано для запуску на ПК)`;
+  getStats(): string {
+    return this.player.getStats();
+  }
+
+  getProtectionLevel(): number {
+    return this.player.getProtectionLevel();
+  }
+}
+
+// Декоратор: додавання бронежилета
+class ArmorDecorator extends PlayerDecorator {
+  getStats(): string {
+    return `${super.getStats()} + Armor`;
+  }
+
+  getProtectionLevel(): number {
+    return super.getProtectionLevel() + 50; // Додаємо 50 одиниць захисту
+  }
+}
+
+// Декоратор: додавання каски
+class HelmetDecorator extends PlayerDecorator {
+  getStats(): string {
+    return `${super.getStats()} + Helmet`;
+  }
+
+  getProtectionLevel(): number {
+    return super.getProtectionLevel() + 25; // Додаємо 25 одиниць захисту
   }
 }
 
 // Використання
-const consoleGame = new ConsoleGame();
-const pcGameAdapter = new ConsoleToPcAdapter(consoleGame);
+const basicPlayer = new BasicPlayer();
+console.log(
+  'Базовий гравець:',
+  basicPlayer.getStats(),
+  '| Захист:',
+  basicPlayer.getProtectionLevel()
+);
 
-console.log(pcGameAdapter.launch());
+const playerWithArmor = new ArmorDecorator(basicPlayer);
+console.log(
+  'Гравець з бронежилетом:',
+  playerWithArmor.getStats(),
+  '| Захист:',
+  playerWithArmor.getProtectionLevel()
+);
+
+const playerWithArmorAndHelmet = new HelmetDecorator(playerWithArmor);
+console.log(
+  'Гравець з бронежилетом і каскою:',
+  playerWithArmorAndHelmet.getStats(),
+  '| Захист:',
+  playerWithArmorAndHelmet.getProtectionLevel()
+);
