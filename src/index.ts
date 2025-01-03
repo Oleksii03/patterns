@@ -345,82 +345,138 @@
 
 // =========decorator===========================================
 // Базовий інтерфейс
-interface Player {
-  getStats(): string;
-  getProtectionLevel(): number;
+// interface Player {
+//   getStats(): string;
+//   getProtectionLevel(): number;
+// }
+
+// // Конкретний компонент: базовий герой
+// class BasicPlayer implements Player {
+//   getStats(): string {
+//     return 'Player: Basic equipment';
+//   }
+
+//   getProtectionLevel(): number {
+//     return 0; // Початковий рівень захисту
+//   }
+// }
+
+// // Базовий декоратор
+// class PlayerDecorator implements Player {
+//   protected player: Player;
+
+//   constructor(player: Player) {
+//     this.player = player;
+//   }
+
+//   getStats(): string {
+//     return this.player.getStats();
+//   }
+
+//   getProtectionLevel(): number {
+//     return this.player.getProtectionLevel();
+//   }
+// }
+
+// // Декоратор: додавання бронежилета
+// class ArmorDecorator extends PlayerDecorator {
+//   getStats(): string {
+//     return `${super.getStats()} + Armor`;
+//   }
+
+//   getProtectionLevel(): number {
+//     return super.getProtectionLevel() + 50; // Додаємо 50 одиниць захисту
+//   }
+// }
+
+// // Декоратор: додавання каски
+// class HelmetDecorator extends PlayerDecorator {
+//   getStats(): string {
+//     return `${super.getStats()} + Helmet`;
+//   }
+
+//   getProtectionLevel(): number {
+//     return super.getProtectionLevel() + 25; // Додаємо 25 одиниць захисту
+//   }
+// }
+
+// // Використання
+// const basicPlayer = new BasicPlayer();
+// console.log(
+//   'Базовий гравець:',
+//   basicPlayer.getStats(),
+//   '| Захист:',
+//   basicPlayer.getProtectionLevel()
+// );
+
+// const playerWithArmor = new ArmorDecorator(basicPlayer);
+// console.log(
+//   'Гравець з бронежилетом:',
+//   playerWithArmor.getStats(),
+//   '| Захист:',
+//   playerWithArmor.getProtectionLevel()
+// );
+
+// const playerWithArmorAndHelmet = new HelmetDecorator(playerWithArmor);
+// console.log(
+//   'Гравець з бронежилетом і каскою:',
+//   playerWithArmorAndHelmet.getStats(),
+//   '| Захист:',
+//   playerWithArmorAndHelmet.getProtectionLevel()
+// );
+
+// ===============bridge======================================
+// інтерфейс
+interface Color {
+  applyColor(): string;
 }
 
-// Конкретний компонент: базовий герой
-class BasicPlayer implements Player {
-  getStats(): string {
-    return 'Player: Basic equipment';
-  }
-
-  getProtectionLevel(): number {
-    return 0; // Початковий рівень захисту
+class RedColor implements Color {
+  applyColor() {
+    return 'червоного кольору.';
   }
 }
 
-// Базовий декоратор
-class PlayerDecorator implements Player {
-  protected player: Player;
-
-  constructor(player: Player) {
-    this.player = player;
-  }
-
-  getStats(): string {
-    return this.player.getStats();
-  }
-
-  getProtectionLevel(): number {
-    return this.player.getProtectionLevel();
+class BlueColor implements Color {
+  applyColor() {
+    return 'синього кольору.';
   }
 }
 
-// Декоратор: додавання бронежилета
-class ArmorDecorator extends PlayerDecorator {
-  getStats(): string {
-    return `${super.getStats()} + Armor`;
+// Абстракція для моделі мопеда
+abstract class Moped {
+  protected color: Color;
+
+  constructor(color: Color) {
+    this.color = color;
   }
 
-  getProtectionLevel(): number {
-    return super.getProtectionLevel() + 50; // Додаємо 50 одиниць захисту
+  abstract displayDetails(): string;
+}
+
+// Конкретні моделі мопедів
+class AlphaMoped extends Moped {
+  displayDetails() {
+    return `Мопед Альфа ${this.color.applyColor()}`;
   }
 }
 
-// Декоратор: додавання каски
-class HelmetDecorator extends PlayerDecorator {
-  getStats(): string {
-    return `${super.getStats()} + Helmet`;
-  }
-
-  getProtectionLevel(): number {
-    return super.getProtectionLevel() + 25; // Додаємо 25 одиниць захисту
+class KarpatyMoped extends Moped {
+  displayDetails() {
+    return `Мопед Карпати ${this.color.applyColor()}`;
   }
 }
 
 // Використання
-const basicPlayer = new BasicPlayer();
-console.log(
-  'Базовий гравець:',
-  basicPlayer.getStats(),
-  '| Захист:',
-  basicPlayer.getProtectionLevel()
-);
+const alphaRed = new AlphaMoped(new RedColor());
+const karpatyBlue = new KarpatyMoped(new BlueColor());
 
-const playerWithArmor = new ArmorDecorator(basicPlayer);
-console.log(
-  'Гравець з бронежилетом:',
-  playerWithArmor.getStats(),
-  '| Захист:',
-  playerWithArmor.getProtectionLevel()
-);
+function getDetails(moped: Moped) {
+  const result = moped.displayDetails();
+  console.log(result);
+}
 
-const playerWithArmorAndHelmet = new HelmetDecorator(playerWithArmor);
-console.log(
-  'Гравець з бронежилетом і каскою:',
-  playerWithArmorAndHelmet.getStats(),
-  '| Захист:',
-  playerWithArmorAndHelmet.getProtectionLevel()
-);
+getDetails(karpatyBlue);
+getDetails(alphaRed);
+
+// =====================================================
