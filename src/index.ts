@@ -426,57 +426,132 @@
 // );
 
 // ===============bridge======================================
-// інтерфейс
-interface Color {
-  applyColor(): string;
+// // інтерфейс
+// interface Color {
+//   applyColor(): string;
+// }
+
+// class RedColor implements Color {
+//   applyColor() {
+//     return 'червоного кольору.';
+//   }
+// }
+
+// class BlueColor implements Color {
+//   applyColor() {
+//     return 'синього кольору.';
+//   }
+// }
+
+// // Абстракція для моделі мопеда
+// abstract class Moped {
+//   protected color: Color;
+
+//   constructor(color: Color) {
+//     this.color = color;
+//   }
+
+//   abstract displayDetails(): string;
+// }
+
+// // Конкретні моделі мопедів
+// class AlphaMoped extends Moped {
+//   displayDetails() {
+//     return `Мопед Альфа ${this.color.applyColor()}`;
+//   }
+// }
+
+// class KarpatyMoped extends Moped {
+//   displayDetails() {
+//     return `Мопед Карпати ${this.color.applyColor()}`;
+//   }
+// }
+
+// // Використання
+// const alphaRed = new AlphaMoped(new RedColor());
+// const karpatyBlue = new KarpatyMoped(new BlueColor());
+
+// function getDetails(moped: Moped) {
+//   const result = moped.displayDetails();
+//   console.log(result);
+// }
+
+// getDetails(karpatyBlue);
+// getDetails(alphaRed);
+
+// ===========Composite=====================================
+// Абстрактний клас Компонент
+abstract class Component {
+  abstract displayDetails(): void;
+  abstract getPrice(): number;
 }
 
-class RedColor implements Color {
-  applyColor() {
-    return 'червоного кольору.';
+// Конкретний компонент: частина мопеда
+class MopedPart extends Component {
+  private readonly name: string;
+  private readonly price: number;
+
+  constructor(name: string, price: number) {
+    super();
+    this.name = name;
+    this.price = price;
+  }
+
+  displayDetails(): void {
+    console.log(`Part: ${this.name}, Price: ${this.price}₴`);
+  }
+
+  getPrice(): number {
+    return this.price;
   }
 }
 
-class BlueColor implements Color {
-  applyColor() {
-    return 'синього кольору.';
-  }
-}
+// Композитний компонент: мопед
+class Moped extends Component {
+  private readonly name: string;
+  private readonly parts: Component[] = [];
 
-// Абстракція для моделі мопеда
-abstract class Moped {
-  protected color: Color;
-
-  constructor(color: Color) {
-    this.color = color;
+  constructor(name: string) {
+    super();
+    this.name = name;
   }
 
-  abstract displayDetails(): string;
-}
-
-// Конкретні моделі мопедів
-class AlphaMoped extends Moped {
-  displayDetails() {
-    return `Мопед Альфа ${this.color.applyColor()}`;
+  addPart(part: Component): void {
+    this.parts.push(part);
   }
-}
 
-class KarpatyMoped extends Moped {
-  displayDetails() {
-    return `Мопед Карпати ${this.color.applyColor()}`;
+  removePart(part: Component): void {
+    const idx = this.parts.indexOf(part);
+    if (idx !== -1) this.parts.splice(idx, 1);
+  }
+
+  displayDetails(): void {
+    console.log(`Moped: ${this.name}`);
+    for (const part of this.parts) {
+      part.displayDetails();
+    }
+  }
+
+  getPrice(): number {
+    return this.parts.reduce((total, part) => total + part.getPrice(), 0);
   }
 }
 
 // Використання
-const alphaRed = new AlphaMoped(new RedColor());
-const karpatyBlue = new KarpatyMoped(new BlueColor());
+const alphaMoped = new Moped('Alpha');
 
-function getDetails(moped: Moped) {
-  const result = moped.displayDetails();
-  console.log(result);
-}
+// Додаємо частини мопеда з цінами
+const frame = new MopedPart('Frame', 1000);
+const engine = new MopedPart('Engine', 5000);
+const wheels = new MopedPart('Wheels', 2000);
+const handlebar = new MopedPart('Handlebar', 50);
 
-getDetails(karpatyBlue);
-getDetails(alphaRed);
-
-// =====================================================
+alphaMoped.addPart(frame);
+alphaMoped.addPart(engine);
+alphaMoped.addPart(wheels);
+alphaMoped.addPart(handlebar);
+// Видаляємо додану частину (наприклад, "Handlebar")
+alphaMoped.removePart(handlebar);
+// Виведення ієрархії мопеда та загальної ціни
+alphaMoped.displayDetails();
+// console.log(`Total Price: ${alphaMoped.getPrice()}₴`);
