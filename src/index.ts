@@ -554,4 +554,4 @@ alphaMoped.addPart(handlebar);
 alphaMoped.removePart(handlebar);
 // Виведення ієрархії мопеда та загальної ціни
 alphaMoped.displayDetails();
-// console.log(`Total Price: ${alphaMoped.getPrice()}₴`);
+console.log(`Total Price: ${alphaMoped.getPrice()}₴`);
