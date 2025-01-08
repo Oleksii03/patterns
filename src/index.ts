@@ -479,79 +479,168 @@
 // getDetails(karpatyBlue);
 // getDetails(alphaRed);
 
-// ===========Composite=====================================
-// Абстрактний клас Компонент
-abstract class Component {
-  abstract displayDetails(): void;
-  abstract getPrice(): number;
-}
-
-// Конкретний компонент: частина мопеда
-class MopedPart extends Component {
-  private readonly name: string;
-  private readonly price: number;
-
-  constructor(name: string, price: number) {
-    super();
-    this.name = name;
-    this.price = price;
+// ===============facade=====================================
+// Підсистема 1: Двигун мопеда
+class Engine {
+  start() {
+    console.log('Двигун запущено');
   }
 
-  displayDetails(): void {
-    console.log(`Part: ${this.name}, Price: ${this.price}₴`);
-  }
-
-  getPrice(): number {
-    return this.price;
+  stop() {
+    console.log('Двигун зупинено');
   }
 }
 
-// Композитний компонент: мопед
-class Moped extends Component {
-  private readonly name: string;
-  private readonly parts: Component[] = [];
-
-  constructor(name: string) {
-    super();
-    this.name = name;
+// Підсистема 2: Ліхтарі мопеда
+class Lights {
+  turnOn() {
+    console.log('Ліхтарі включені');
   }
 
-  addPart(part: Component): void {
-    this.parts.push(part);
-  }
-
-  removePart(part: Component): void {
-    const idx = this.parts.indexOf(part);
-    if (idx !== -1) this.parts.splice(idx, 1);
-  }
-
-  displayDetails(): void {
-    console.log(`Moped: ${this.name}`);
-    for (const part of this.parts) {
-      part.displayDetails();
-    }
-  }
-
-  getPrice(): number {
-    return this.parts.reduce((total, part) => total + part.getPrice(), 0);
+  turnOff() {
+    console.log('Ліхтарі вимкнено');
   }
 }
 
-// Використання
-const alphaMoped = new Moped('Alpha');
+// Підсистема 3: Кермо мопеда
+class Handlebar {
+  turnLeft() {
+    console.log('Кермо повернуте наліво');
+  }
 
-// Додаємо частини мопеда з цінами
-const frame = new MopedPart('Frame', 1000);
-const engine = new MopedPart('Engine', 5000);
-const wheels = new MopedPart('Wheels', 2000);
-const handlebar = new MopedPart('Handlebar', 50);
+  turnRight() {
+    console.log('Кермо повернуте направо');
+  }
+}
 
-alphaMoped.addPart(frame);
-alphaMoped.addPart(engine);
-alphaMoped.addPart(wheels);
-alphaMoped.addPart(handlebar);
-// Видаляємо додану частину (наприклад, "Handlebar")
-alphaMoped.removePart(handlebar);
-// Виведення ієрархії мопеда та загальної ціни
-alphaMoped.displayDetails();
-console.log(`Total Price: ${alphaMoped.getPrice()}₴`);
+// Підсистема 4: Колеса мопеда
+class Wheels {
+  startMoving() {
+    console.log('Колеса почали рухатись');
+  }
+
+  stopMoving() {
+    console.log('Колеса зупинились');
+  }
+}
+
+// Facade: спрощений інтерфейс для мопеда Альфа
+class AlphaMopedFacade {
+  private readonly engine: Engine;
+  private readonly lights: Lights;
+  private readonly handlebar: Handlebar;
+  private readonly wheels: Wheels;
+
+  constructor() {
+    this.engine = new Engine();
+    this.lights = new Lights();
+    this.handlebar = new Handlebar();
+    this.wheels = new Wheels();
+  }
+
+  startMoped() {
+    this.lights.turnOn();
+    this.engine.start();
+    this.wheels.startMoving();
+    console.log('Мопед готовий до поїздки');
+  }
+
+  stopMoped() {
+    this.wheels.stopMoving();
+    this.engine.stop();
+    this.lights.turnOff();
+    console.log('Мопед зупинено');
+  }
+
+  turnLeft() {
+    this.handlebar.turnLeft();
+  }
+
+  turnRight() {
+    this.handlebar.turnRight();
+  }
+}
+
+// Клієнтський код
+const moped = new AlphaMopedFacade();
+
+moped.startMoped(); // Запуск мопеда
+moped.turnLeft(); // Поворот наліво
+moped.stopMoped(); // Зупинка мопеда
+
+// ===========composite=====================================
+// // Абстрактний клас Компонент
+// abstract class Component {
+//   abstract displayDetails(): void;
+//   abstract getPrice(): number;
+// }
+
+// // Конкретний компонент: частина мопеда
+// class MopedPart extends Component {
+//   private readonly name: string;
+//   private readonly price: number;
+
+//   constructor(name: string, price: number) {
+//     super();
+//     this.name = name;
+//     this.price = price;
+//   }
+
+//   displayDetails(): void {
+//     console.log(`Part: ${this.name}, Price: ${this.price}₴`);
+//   }
+
+//   getPrice(): number {
+//     return this.price;
+//   }
+// }
+
+// // Композитний компонент: мопед
+// class Moped extends Component {
+//   private readonly name: string;
+//   private readonly parts: Component[] = [];
+
+//   constructor(name: string) {
+//     super();
+//     this.name = name;
+//   }
+
+//   addPart(part: Component): void {
+//     this.parts.push(part);
+//   }
+
+//   removePart(part: Component): void {
+//     const idx = this.parts.indexOf(part);
+//     if (idx !== -1) this.parts.splice(idx, 1);
+//   }
+
+//   displayDetails(): void {
+//     console.log(`Moped: ${this.name}`);
+//     for (const part of this.parts) {
+//       part.displayDetails();
+//     }
+//   }
+
+//   getPrice(): number {
+//     return this.parts.reduce((total, part) => total + part.getPrice(), 0);
+//   }
+// }
+
+// // Використання
+// const alphaMoped = new Moped('Alpha');
+
+// // Додаємо частини мопеда з цінами
+// const frame = new MopedPart('Frame', 1000);
+// const engine = new MopedPart('Engine', 5000);
+// const wheels = new MopedPart('Wheels', 2000);
+// const handlebar = new MopedPart('Handlebar', 50);
+
+// alphaMoped.addPart(frame);
+// alphaMoped.addPart(engine);
+// alphaMoped.addPart(wheels);
+// alphaMoped.addPart(handlebar);
+// // Видаляємо додану частину (наприклад, "Handlebar")
+// alphaMoped.removePart(handlebar);
+// // Виведення ієрархії мопеда та загальної ціни
+// alphaMoped.displayDetails();
+// console.log(`Total Price: ${alphaMoped.getPrice()}₴`);
