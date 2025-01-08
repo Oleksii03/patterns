@@ -2,6 +2,8 @@
 // import './structural/structural';
 // ------------------------------------
 
+import { l } from 'vite/dist/node/types.d-aGj9QkWt';
+
 // ==================factory-method=========================
 // interface Subscription {
 //   operation(): string;
@@ -480,93 +482,136 @@
 // getDetails(alphaRed);
 
 // ===============facade=====================================
-// Підсистема 1: Двигун мопеда
-class Engine {
-  start() {
-    console.log('Двигун запущено');
-  }
+// // Підсистема 1: Двигун мопеда
+// class Engine {
+//   start() {
+//     console.log('Двигун запущено');
+//   }
 
-  stop() {
-    console.log('Двигун зупинено');
+//   stop() {
+//     console.log('Двигун зупинено');
+//   }
+// }
+
+// // Підсистема 2: Ліхтарі мопеда
+// class Lights {
+//   turnOn() {
+//     console.log('Ліхтарі включені');
+//   }
+
+//   turnOff() {
+//     console.log('Ліхтарі вимкнено');
+//   }
+// }
+
+// // Підсистема 3: Кермо мопеда
+// class Handlebar {
+//   turnLeft() {
+//     console.log('Кермо повернуте наліво');
+//   }
+
+//   turnRight() {
+//     console.log('Кермо повернуте направо');
+//   }
+// }
+
+// // Підсистема 4: Колеса мопеда
+// class Wheels {
+//   startMoving() {
+//     console.log('Колеса почали рухатись');
+//   }
+
+//   stopMoving() {
+//     console.log('Колеса зупинились');
+//   }
+// }
+
+// // Facade: спрощений інтерфейс для мопеда Альфа
+// class AlphaMopedFacade {
+//   private readonly engine: Engine;
+//   private readonly lights: Lights;
+//   private readonly handlebar: Handlebar;
+//   private readonly wheels: Wheels;
+
+//   constructor() {
+//     this.engine = new Engine();
+//     this.lights = new Lights();
+//     this.handlebar = new Handlebar();
+//     this.wheels = new Wheels();
+//   }
+
+//   startMoped() {
+//     this.lights.turnOn();
+//     this.engine.start();
+//     this.wheels.startMoving();
+//     console.log('Мопед готовий до поїздки');
+//   }
+
+//   stopMoped() {
+//     this.wheels.stopMoving();
+//     this.engine.stop();
+//     this.lights.turnOff();
+//     console.log('Мопед зупинено');
+//   }
+
+//   turnLeft() {
+//     this.handlebar.turnLeft();
+//   }
+
+//   turnRight() {
+//     this.handlebar.turnRight();
+//   }
+// }
+
+// // Клієнтський код
+// const moped = new AlphaMopedFacade();
+
+// moped.startMoped(); // Запуск мопеда
+// moped.turnLeft(); // Поворот наліво
+// moped.stopMoped(); // Зупинка мопеда
+
+// ==============proxy========================================
+// Інтерфейс, який описує поведінку сервісу
+interface DataService {
+  getData(): string;
+}
+
+// Реальний сервіс, який містить основну бізнес-логіку
+class RealDataService implements DataService {
+  getData(): string {
+    return 'Дані з сервісу.';
   }
 }
 
-// Підсистема 2: Ліхтарі мопеда
-class Lights {
-  turnOn() {
-    console.log('Ліхтарі включені');
+// Проксі-сервіс, який додає додаткову логіку, наприклад кешування
+class CachedDataServiceProxy implements DataService {
+  private readonly realDataService: RealDataService;
+  private cachedData: string | null = null;
+
+  constructor(realDataService: RealDataService) {
+    this.realDataService = realDataService;
   }
 
-  turnOff() {
-    console.log('Ліхтарі вимкнено');
-  }
-}
-
-// Підсистема 3: Кермо мопеда
-class Handlebar {
-  turnLeft() {
-    console.log('Кермо повернуте наліво');
-  }
-
-  turnRight() {
-    console.log('Кермо повернуте направо');
+  getData(): string {
+    if (!this.cachedData) {
+      console.log('Завантаження даних із основного сервісу...');
+      this.cachedData = this.realDataService.getData();
+    } else {
+      console.log('Повернення кешованих даних.');
+    }
+    return this.cachedData;
   }
 }
 
-// Підсистема 4: Колеса мопеда
-class Wheels {
-  startMoving() {
-    console.log('Колеса почали рухатись');
-  }
+// Приклад використання
+const cachedProxy = new CachedDataServiceProxy(new RealDataService());
 
-  stopMoving() {
-    console.log('Колеса зупинились');
-  }
+function clientCode(data: DataService) {
+  data.getData();
 }
 
-// Facade: спрощений інтерфейс для мопеда Альфа
-class AlphaMopedFacade {
-  private readonly engine: Engine;
-  private readonly lights: Lights;
-  private readonly handlebar: Handlebar;
-  private readonly wheels: Wheels;
-
-  constructor() {
-    this.engine = new Engine();
-    this.lights = new Lights();
-    this.handlebar = new Handlebar();
-    this.wheels = new Wheels();
-  }
-
-  startMoped() {
-    this.lights.turnOn();
-    this.engine.start();
-    this.wheels.startMoving();
-    console.log('Мопед готовий до поїздки');
-  }
-
-  stopMoped() {
-    this.wheels.stopMoving();
-    this.engine.stop();
-    this.lights.turnOff();
-    console.log('Мопед зупинено');
-  }
-
-  turnLeft() {
-    this.handlebar.turnLeft();
-  }
-
-  turnRight() {
-    this.handlebar.turnRight();
-  }
-}
-
-// Клієнтський код
-const moped = new AlphaMopedFacade();
-
-moped.startMoped(); // Запуск мопеда
-moped.turnLeft(); // Поворот наліво
-moped.stopMoped(); // Зупинка мопеда
+clientCode(cachedProxy); // Завантаження даних із основного сервісу...
+clientCode(cachedProxy); // Повернення кешованих даних.
 
 // ===========composite=====================================
 // // Абстрактний клас Компонент
