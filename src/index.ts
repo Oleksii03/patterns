@@ -2,8 +2,6 @@
 // import './structural/structural';
 // ------------------------------------
 
-import { l } from 'vite/dist/node/types.d-aGj9QkWt';
-
 // ==================factory-method=========================
 // interface Subscription {
 //   operation(): string;
@@ -571,47 +569,47 @@ import { l } from 'vite/dist/node/types.d-aGj9QkWt';
 // moped.stopMoped(); // Зупинка мопеда
 
 // ==============proxy========================================
-// Інтерфейс, який описує поведінку сервісу
-interface DataService {
-  getData(): string;
-}
+// // Інтерфейс, який описує поведінку сервісу
+// interface DataService {
+//   getData(): string;
+// }
 
-// Реальний сервіс, який містить основну бізнес-логіку
-class RealDataService implements DataService {
-  getData(): string {
-    return 'Дані з сервісу.';
-  }
-}
+// // Реальний сервіс, який містить основну бізнес-логіку
+// class RealDataService implements DataService {
+//   getData(): string {
+//     return 'Дані з сервісу.';
+//   }
+// }
 
-// Проксі-сервіс, який додає додаткову логіку, наприклад кешування
-class CachedDataServiceProxy implements DataService {
-  private readonly realDataService: RealDataService;
-  private cachedData: string | null = null;
+// // Проксі-сервіс, який додає додаткову логіку, наприклад кешування
+// class CachedDataServiceProxy implements DataService {
+//   private readonly realDataService: RealDataService;
+//   private cachedData: string | null = null;
 
-  constructor(realDataService: RealDataService) {
-    this.realDataService = realDataService;
-  }
+//   constructor(realDataService: RealDataService) {
+//     this.realDataService = realDataService;
+//   }
 
-  getData(): string {
-    if (!this.cachedData) {
-      console.log('Завантаження даних із основного сервісу...');
-      this.cachedData = this.realDataService.getData();
-    } else {
-      console.log('Повернення кешованих даних.');
-    }
-    return this.cachedData;
-  }
-}
+//   getData(): string {
+//     if (!this.cachedData) {
+//       console.log('Завантаження даних із основного сервісу...');
+//       this.cachedData = this.realDataService.getData();
+//     } else {
+//       console.log('Повернення кешованих даних.');
+//     }
+//     return this.cachedData;
+//   }
+// }
 
-// Приклад використання
-const cachedProxy = new CachedDataServiceProxy(new RealDataService());
+// // Приклад використання
+// const cachedProxy = new CachedDataServiceProxy(new RealDataService());
 
-function clientCode(data: DataService) {
-  data.getData();
-}
+// function clientCode(data: DataService) {
+//   data.getData();
+// }
 
-clientCode(cachedProxy); // Завантаження даних із основного сервісу...
-clientCode(cachedProxy); // Повернення кешованих даних.
+// clientCode(cachedProxy); // Завантаження даних із основного сервісу...
+// clientCode(cachedProxy); // Повернення кешованих даних.
 
 // ===========composite=====================================
 // // Абстрактний клас Компонент
@@ -689,3 +687,45 @@ clientCode(cachedProxy); // Повернення кешованих даних.
 // // Виведення ієрархії мопеда та загальної ціни
 // alphaMoped.displayDetails();
 // console.log(`Total Price: ${alphaMoped.getPrice()}₴`);
+
+// ===============Flyweight==================================
+// Інтерфейс Flyweight
+interface IBook {
+  id: number;
+  title: string;
+  author: string;
+}
+
+// Flyweight
+class Book implements IBook {
+  constructor(
+    public readonly id: number,
+    public readonly title: string,
+    public readonly author: string
+  ) {}
+}
+
+// Flyweight Factory для кешування книг
+class BookFactory {
+  private static readonly bookCache: Map<number, Book> = new Map();
+
+  static getBook(id: number, title: string, author: string): Book {
+    if (!this.bookCache.has(id)) {
+      console.log(`Creating new book: ${title} by ${author}`);
+      this.bookCache.set(id, new Book(id, title, author));
+    }
+    return this.bookCache.get(id)!;
+  }
+
+  static getCacheSize(): number {
+    return this.bookCache.size;
+  }
+}
+
+// Використання
+const book1 = BookFactory.getBook(1, '1984', 'George Orwell');
+const book2 = BookFactory.getBook(2, 'To Kill a Mockingbird', 'Harper Lee');
+const book3 = BookFactory.getBook(1, '1984', 'George Orwell'); // Взято з кешу
+
+console.log(book1 === book3); // true, оскільки об'єкт береться з кешу
+console.log(`Cache size: ${BookFactory.getCacheSize()}`); // 2
