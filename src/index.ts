@@ -1,5 +1,6 @@
 // import './creational/creational';
 // import './structural/structural';
+// import './behavioral/behavioral';
 // ------------------------------------
 
 // ==================factory-method=========================
@@ -689,43 +690,99 @@
 // console.log(`Total Price: ${alphaMoped.getPrice()}₴`);
 
 // ===============Flyweight==================================
-// Інтерфейс Flyweight
-interface IBook {
-  id: number;
-  title: string;
-  author: string;
+// // Інтерфейс Flyweight
+// interface IBook {
+//   id: number;
+//   title: string;
+//   author: string;
+// }
+
+// // Flyweight
+// class Book implements IBook {
+//   constructor(
+//     public readonly id: number,
+//     public readonly title: string,
+//     public readonly author: string
+//   ) {}
+// }
+
+// // Flyweight Factory для кешування книг
+// class BookFactory {
+//   private static readonly bookCache: Map<number, Book> = new Map();
+
+//   static getBook(id: number, title: string, author: string): Book {
+//     if (!this.bookCache.has(id)) {
+//       console.log(`Creating new book: ${title} by ${author}`);
+//       this.bookCache.set(id, new Book(id, title, author));
+//     }
+//     return this.bookCache.get(id)!;
+//   }
+
+//   static getCacheSize(): number {
+//     return this.bookCache.size;
+//   }
+// }
+
+// // Використання
+// const book1 = BookFactory.getBook(1, '1984', 'George Orwell');
+// const book2 = BookFactory.getBook(2, 'To Kill a Mockingbird', 'Harper Lee');
+// const book3 = BookFactory.getBook(1, '1984', 'George Orwell'); // Взято з кешу
+
+// console.log(book1 === book3); // true, оскільки об'єкт береться з кешу
+// console.log(`Cache size: ${BookFactory.getCacheSize()}`); // 2
+
+// ==================================================
+// ---------------behavioral-------------------------
+// ==================================================
+
+// ===========Strategy================================
+// Інтерфейс стратегії
+interface PaymentStrategy {
+  pay(amount: number): void;
 }
 
-// Flyweight
-class Book implements IBook {
-  constructor(
-    public readonly id: number,
-    public readonly title: string,
-    public readonly author: string
-  ) {}
+// Реалізація стратегії оплати через кредитну картку
+class CreditCardPayment implements PaymentStrategy {
+  constructor(private readonly cardNumber: string) {}
+
+  pay(amount: number): void {
+    console.log(`Оплачено ${amount} грн за допомогою кредитної картки ${this.cardNumber}`);
+  }
 }
 
-// Flyweight Factory для кешування книг
-class BookFactory {
-  private static readonly bookCache: Map<number, Book> = new Map();
+// Реалізація стратегії оплати готівкою
+class CashPayment implements PaymentStrategy {
+  pay(amount: number): void {
+    console.log(`Оплачено ${amount} грн готівкою.`);
+  }
+}
 
-  static getBook(id: number, title: string, author: string): Book {
-    if (!this.bookCache.has(id)) {
-      console.log(`Creating new book: ${title} by ${author}`);
-      this.bookCache.set(id, new Book(id, title, author));
-    }
-    return this.bookCache.get(id)!;
+// Контекст (користувач стратегії)
+class PaymentProcessor {
+  private strategy: PaymentStrategy | null = null;
+
+  // Метод для встановлення стратегії
+  setStrategy(strategy: PaymentStrategy): void {
+    this.strategy = strategy;
   }
 
-  static getCacheSize(): number {
-    return this.bookCache.size;
+  // Виконання оплати
+  processPayment(amount: number): void {
+    if (!this.strategy) {
+      console.log('Стратегію оплати не встановлено');
+      return;
+    }
+    this.strategy.pay(amount);
   }
 }
 
 // Використання
-const book1 = BookFactory.getBook(1, '1984', 'George Orwell');
-const book2 = BookFactory.getBook(2, 'To Kill a Mockingbird', 'Harper Lee');
-const book3 = BookFactory.getBook(1, '1984', 'George Orwell'); // Взято з кешу
+const paymentProcessor = new PaymentProcessor();
 
-console.log(book1 === book3); // true, оскільки об'єкт береться з кешу
-console.log(`Cache size: ${BookFactory.getCacheSize()}`); // 2
+// Оплата через кредитну картку
+paymentProcessor.setStrategy(new CreditCardPayment('4434567898765432'));
+paymentProcessor.processPayment(1000);
+
+// Оплата готівкою
+paymentProcessor.setStrategy(new CashPayment());
+paymentProcessor.processPayment(700);
