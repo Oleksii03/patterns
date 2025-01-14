@@ -736,53 +736,108 @@
 // ==================================================
 
 // ===========Strategy================================
-// Інтерфейс стратегії
-interface PaymentStrategy {
-  pay(amount: number): void;
+// // Інтерфейс стратегії
+// interface PaymentStrategy {
+//   pay(amount: number): void;
+// }
+
+// // Реалізація стратегії оплати через кредитну картку
+// class CreditCardPayment implements PaymentStrategy {
+//   constructor(private readonly cardNumber: string) {}
+
+//   pay(amount: number): void {
+//     console.log(`Оплачено ${amount} грн за допомогою кредитної картки ${this.cardNumber}`);
+//   }
+// }
+
+// // Реалізація стратегії оплати готівкою
+// class CashPayment implements PaymentStrategy {
+//   pay(amount: number): void {
+//     console.log(`Оплачено ${amount} грн готівкою.`);
+//   }
+// }
+
+// // Контекст (користувач стратегії)
+// class PaymentProcessor {
+//   private strategy: PaymentStrategy | null = null;
+
+//   // Метод для встановлення стратегії
+//   setStrategy(strategy: PaymentStrategy): void {
+//     this.strategy = strategy;
+//   }
+
+//   // Виконання оплати
+//   processPayment(amount: number): void {
+//     if (!this.strategy) {
+//       console.log('Стратегію оплати не встановлено');
+//       return;
+//     }
+//     this.strategy.pay(amount);
+//   }
+// }
+
+// // Використання
+// const paymentProcessor = new PaymentProcessor();
+
+// // Оплата через кредитну картку
+// paymentProcessor.setStrategy(new CreditCardPayment('4434567898765432'));
+// paymentProcessor.processPayment(1000);
+
+// // Оплата готівкою
+// paymentProcessor.setStrategy(new CashPayment());
+// paymentProcessor.processPayment(700);
+
+// ============Template Method============================
+// Абстрактний клас із шаблонним методом
+abstract class BouquetMaker {
+  public makeBouquet(): void {
+    this.prepareBase();
+    this.addFlowers();
+    this.addDecorations();
+    this.wrapBouquet();
+  }
+
+  // Спільні кроки
+  protected prepareBase(): void {
+    console.log('Підготовка основи для букета...');
+  }
+
+  protected wrapBouquet(): void {
+    console.log('Упаковка букета...');
+  }
+
+  // Кроки, які мають реалізовувати підкласи
+  protected abstract addFlowers(): void;
+  protected abstract addDecorations(): void;
 }
 
-// Реалізація стратегії оплати через кредитну картку
-class CreditCardPayment implements PaymentStrategy {
-  constructor(private readonly cardNumber: string) {}
+// Клас для класичного букета
+class ClassicBouquetMaker extends BouquetMaker {
+  protected addFlowers(): void {
+    console.log('Додавання троянд та лілій...');
+  }
 
-  pay(amount: number): void {
-    console.log(`Оплачено ${amount} грн за допомогою кредитної картки ${this.cardNumber}`);
+  protected addDecorations(): void {
+    console.log('Додавання стрічки...');
   }
 }
 
-// Реалізація стратегії оплати готівкою
-class CashPayment implements PaymentStrategy {
-  pay(amount: number): void {
-    console.log(`Оплачено ${amount} грн готівкою.`);
-  }
-}
-
-// Контекст (користувач стратегії)
-class PaymentProcessor {
-  private strategy: PaymentStrategy | null = null;
-
-  // Метод для встановлення стратегії
-  setStrategy(strategy: PaymentStrategy): void {
-    this.strategy = strategy;
+// Клас для польового букета
+class WildBouquetMaker extends BouquetMaker {
+  protected addFlowers(): void {
+    console.log('Додавання ромашок, волошок та лаванди...');
   }
 
-  // Виконання оплати
-  processPayment(amount: number): void {
-    if (!this.strategy) {
-      console.log('Стратегію оплати не встановлено');
-      return;
-    }
-    this.strategy.pay(amount);
+  protected addDecorations(): void {
+    console.log('Додавання сухоцвітів...');
   }
 }
 
 // Використання
-const paymentProcessor = new PaymentProcessor();
+const classicBouquet = new ClassicBouquetMaker();
+console.log('Приготування класичного букета:');
+classicBouquet.makeBouquet();
 
-// Оплата через кредитну картку
-paymentProcessor.setStrategy(new CreditCardPayment('4434567898765432'));
-paymentProcessor.processPayment(1000);
-
-// Оплата готівкою
-paymentProcessor.setStrategy(new CashPayment());
-paymentProcessor.processPayment(700);
+const wildBouquet = new WildBouquetMaker();
+console.log('\nПриготування польового букета:');
+wildBouquet.makeBouquet();
