@@ -11,3 +11,5 @@ paymentProcessor.processPayment(1000);
 // Оплата готівкою
 paymentProcessor.setStrategy(new CashPayment());
 paymentProcessor.processPayment(700);
+
+console.log('-------------------------------------------------');

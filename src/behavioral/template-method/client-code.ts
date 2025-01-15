@@ -9,3 +9,5 @@ classicBouquet.makeBouquet();
 const wildBouquet = new WildBouquetMaker();
 console.log('\nПриготування польового букета:');
 wildBouquet.makeBouquet();
+
+console.log('-------------------------------------------------');

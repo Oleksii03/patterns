@@ -735,6 +735,180 @@
 // ---------------behavioral-------------------------
 // ==================================================
 
+// ================Visitor============================
+// Інтерфейс для відвідувача
+interface FlowerVisitor {
+  visitRose(rose: Rose): void;
+  visitTulip(tulip: Tulip): void;
+  visitDaisy(daisy: Daisy): void;
+}
+
+// Інтерфейс для квітів
+interface Flower {
+  accept(visitor: FlowerVisitor): void;
+}
+
+// Конкретна квітка: Троянда
+class Rose implements Flower {
+  constructor(public price: number) {}
+
+  getName(): string {
+    return 'Rose';
+  }
+
+  accept(visitor: FlowerVisitor): void {
+    visitor.visitRose(this);
+  }
+}
+
+// Конкретна квітка: Тюльпан
+class Tulip implements Flower {
+  constructor(public price: number) {}
+
+  getName(): string {
+    return 'Tulip';
+  }
+
+  accept(visitor: FlowerVisitor): void {
+    visitor.visitTulip(this);
+  }
+}
+
+// Конкретна квітка: Ромашка
+class Daisy implements Flower {
+  constructor(public price: number) {}
+
+  getName(): string {
+    return 'Daisy';
+  }
+
+  accept(visitor: FlowerVisitor): void {
+    visitor.visitDaisy(this);
+  }
+}
+
+// Конкретний відвідувач для підрахунку вартості букета
+class PriceCalculatorVisitor implements FlowerVisitor {
+  private totalPrice = 0;
+
+  visitRose(rose: Rose): void {
+    this.totalPrice += rose.price;
+  }
+
+  visitTulip(tulip: Tulip): void {
+    this.totalPrice += tulip.price;
+  }
+
+  visitDaisy(daisy: Daisy): void {
+    this.totalPrice += daisy.price;
+  }
+
+  getTotalPrice(): number {
+    return this.totalPrice;
+  }
+}
+
+// Конкретний відвідувач для створення опису букета
+class DescriptionVisitor implements FlowerVisitor {
+  private readonly description: string[] = [];
+
+  visitRose(rose: Rose): void {
+    this.description.push(rose.getName());
+  }
+
+  visitTulip(tulip: Tulip): void {
+    this.description.push(tulip.getName());
+  }
+
+  visitDaisy(daisy: Daisy): void {
+    this.description.push(daisy.getName());
+  }
+
+  getDescription(): string {
+    return this.description.join(', ');
+  }
+}
+
+// Використання
+const bouquetArr: Flower[] = [new Rose(700), new Tulip(200), new Daisy(70)];
+
+const priceCalculator = new PriceCalculatorVisitor();
+const descriptionVisitor = new DescriptionVisitor();
+
+function clientCode(bouquet: Flower[], visitor: FlowerVisitor) {
+  bouquet.forEach(flower => flower.accept(visitor));
+}
+
+clientCode(bouquetArr, descriptionVisitor);
+clientCode(bouquetArr, priceCalculator);
+
+console.log(`Total price of bouquet: ${priceCalculator.getTotalPrice()}$`);
+console.log(`Bouquet description: ${descriptionVisitor.getDescription()}.`);
+
+// interface Component {
+//   accept(visitor: Visitor): void;
+// }
+
+// class ConcreteComponentA implements Component {
+//   public accept(visitor: Visitor): void {
+//     visitor.visitConcreteComponentA(this);
+//   }
+
+//   public exclusiveMethodOfConcreteComponentA(): string {
+//     return 'A';
+//   }
+// }
+
+// class ConcreteComponentB implements Component {
+//   public accept(visitor: Visitor): void {
+//     visitor.visitConcreteComponentB(this);
+//   }
+
+//   public specialMethodOfConcreteComponentB(): string {
+//     return 'B';
+//   }
+// }
+
+// interface Visitor {
+//   visitConcreteComponentA(element: ConcreteComponentA): void;
+//   visitConcreteComponentB(element: ConcreteComponentB): void;
+// }
+
+// class ConcreteVisitor1 implements Visitor {
+//   public visitConcreteComponentA(element: ConcreteComponentA): void {
+//     console.log(`${element.exclusiveMethodOfConcreteComponentA()} + ConcreteVisitor1`);
+//   }
+
+//   public visitConcreteComponentB(element: ConcreteComponentB): void {
+//     console.log(`${element.specialMethodOfConcreteComponentB()} + ConcreteVisitor1`);
+//   }
+// }
+
+// class ConcreteVisitor2 implements Visitor {
+//   public visitConcreteComponentA(element: ConcreteComponentA): void {
+//     console.log(`${element.exclusiveMethodOfConcreteComponentA()} + ConcreteVisitor2`);
+//   }
+
+//   public visitConcreteComponentB(element: ConcreteComponentB): void {
+//     console.log(`${element.specialMethodOfConcreteComponentB()} + ConcreteVisitor2`);
+//   }
+// }
+
+// function clientCode(components: Component[], visitor: Visitor) {
+//   for (const component of components) {
+//     component.accept(visitor);
+//   }
+// }
+
+// const components = [new ConcreteComponentA(), new ConcreteComponentB()];
+
+// const visitor1 = new ConcreteVisitor1();
+// clientCode(components, visitor1);
+// console.log('');
+
+// const visitor2 = new ConcreteVisitor2();
+// clientCode(components, visitor2);
+
 // ===========Strategy================================
 // // Інтерфейс стратегії
 // interface PaymentStrategy {
@@ -788,56 +962,56 @@
 // paymentProcessor.processPayment(700);
 
 // ============Template Method============================
-// Абстрактний клас із шаблонним методом
-abstract class BouquetMaker {
-  public makeBouquet(): void {
-    this.prepareBase();
-    this.addFlowers();
-    this.addDecorations();
-    this.wrapBouquet();
-  }
+// // Абстрактний клас із шаблонним методом
+// abstract class BouquetMaker {
+//   public makeBouquet(): void {
+//     this.prepareBase();
+//     this.addFlowers();
+//     this.addDecorations();
+//     this.wrapBouquet();
+//   }
 
-  // Спільні кроки
-  protected prepareBase(): void {
-    console.log('Підготовка основи для букета...');
-  }
+//   // Спільні кроки
+//   protected prepareBase(): void {
+//     console.log('Підготовка основи для букета...');
+//   }
 
-  protected wrapBouquet(): void {
-    console.log('Упаковка букета...');
-  }
+//   protected wrapBouquet(): void {
+//     console.log('Упаковка букета...');
+//   }
 
-  // Кроки, які мають реалізовувати підкласи
-  protected abstract addFlowers(): void;
-  protected abstract addDecorations(): void;
-}
+//   // Кроки, які мають реалізовувати підкласи
+//   protected abstract addFlowers(): void;
+//   protected abstract addDecorations(): void;
+// }
 
-// Клас для класичного букета
-class ClassicBouquetMaker extends BouquetMaker {
-  protected addFlowers(): void {
-    console.log('Додавання троянд та лілій...');
-  }
+// // Клас для класичного букета
+// class ClassicBouquetMaker extends BouquetMaker {
+//   protected addFlowers(): void {
+//     console.log('Додавання троянд та лілій...');
+//   }
 
-  protected addDecorations(): void {
-    console.log('Додавання стрічки...');
-  }
-}
+//   protected addDecorations(): void {
+//     console.log('Додавання стрічки...');
+//   }
+// }
 
-// Клас для польового букета
-class WildBouquetMaker extends BouquetMaker {
-  protected addFlowers(): void {
-    console.log('Додавання ромашок, волошок та лаванди...');
-  }
+// // Клас для польового букета
+// class WildBouquetMaker extends BouquetMaker {
+//   protected addFlowers(): void {
+//     console.log('Додавання ромашок, волошок та лаванди...');
+//   }
 
-  protected addDecorations(): void {
-    console.log('Додавання сухоцвітів...');
-  }
-}
+//   protected addDecorations(): void {
+//     console.log('Додавання сухоцвітів...');
+//   }
+// }
 
-// Використання
-const classicBouquet = new ClassicBouquetMaker();
-console.log('Приготування класичного букета:');
-classicBouquet.makeBouquet();
+// // Використання
+// const classicBouquet = new ClassicBouquetMaker();
+// console.log('Приготування класичного букета:');
+// classicBouquet.makeBouquet();
 
-const wildBouquet = new WildBouquetMaker();
-console.log('\nПриготування польового букета:');
-wildBouquet.makeBouquet();
+// const wildBouquet = new WildBouquetMaker();
+// console.log('\nПриготування польового букета:');
+// wildBouquet.makeBouquet();
