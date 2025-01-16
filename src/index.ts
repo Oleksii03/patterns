@@ -710,7 +710,7 @@
 // class BookFactory {
 //   private static readonly bookCache: Map<number, Book> = new Map();
 
-//   static getBook(id: number, title: string, author: string): Book {
+//   static getBook(id: number, title: string, author: string = 'user'): Book {
 //     if (!this.bookCache.has(id)) {
 //       console.log(`Creating new book: ${title} by ${author}`);
 //       this.bookCache.set(id, new Book(id, title, author));
@@ -735,231 +735,57 @@
 // ---------------behavioral-------------------------
 // ==================================================
 
-// ================Visitor============================
-// Інтерфейс для відвідувача
-interface FlowerVisitor {
-  visitRose(rose: Rose): void;
-  visitTulip(tulip: Tulip): void;
-  visitDaisy(daisy: Daisy): void;
+// ===========Strategy================================
+// Інтерфейс стратегії
+interface PaymentStrategy {
+  pay(amount: number): void;
 }
 
-// Інтерфейс для квітів
-interface Flower {
-  accept(visitor: FlowerVisitor): void;
-}
+// Реалізація стратегії оплати через кредитну картку
+class CreditCardPayment implements PaymentStrategy {
+  constructor(private readonly cardNumber: string) {}
 
-// Конкретна квітка: Троянда
-class Rose implements Flower {
-  constructor(public price: number) {}
-
-  getName(): string {
-    return 'Rose';
-  }
-
-  accept(visitor: FlowerVisitor): void {
-    visitor.visitRose(this);
+  pay(amount: number): void {
+    console.log(`Оплачено ${amount} грн за допомогою кредитної картки ${this.cardNumber}`);
   }
 }
 
-// Конкретна квітка: Тюльпан
-class Tulip implements Flower {
-  constructor(public price: number) {}
-
-  getName(): string {
-    return 'Tulip';
-  }
-
-  accept(visitor: FlowerVisitor): void {
-    visitor.visitTulip(this);
+// Реалізація стратегії оплати готівкою
+class CashPayment implements PaymentStrategy {
+  pay(amount: number): void {
+    console.log(`Оплачено ${amount} грн готівкою.`);
   }
 }
 
-// Конкретна квітка: Ромашка
-class Daisy implements Flower {
-  constructor(public price: number) {}
+// Контекст (користувач стратегії)
+class PaymentProcessor {
+  private strategy: PaymentStrategy | null = null;
 
-  getName(): string {
-    return 'Daisy';
+  // Метод для встановлення стратегії
+  setStrategy(strategy: PaymentStrategy): void {
+    this.strategy = strategy;
   }
 
-  accept(visitor: FlowerVisitor): void {
-    visitor.visitDaisy(this);
-  }
-}
-
-// Конкретний відвідувач для підрахунку вартості букета
-class PriceCalculatorVisitor implements FlowerVisitor {
-  private totalPrice = 0;
-
-  visitRose(rose: Rose): void {
-    this.totalPrice += rose.price;
-  }
-
-  visitTulip(tulip: Tulip): void {
-    this.totalPrice += tulip.price;
-  }
-
-  visitDaisy(daisy: Daisy): void {
-    this.totalPrice += daisy.price;
-  }
-
-  getTotalPrice(): number {
-    return this.totalPrice;
-  }
-}
-
-// Конкретний відвідувач для створення опису букета
-class DescriptionVisitor implements FlowerVisitor {
-  private readonly description: string[] = [];
-
-  visitRose(rose: Rose): void {
-    this.description.push(rose.getName());
-  }
-
-  visitTulip(tulip: Tulip): void {
-    this.description.push(tulip.getName());
-  }
-
-  visitDaisy(daisy: Daisy): void {
-    this.description.push(daisy.getName());
-  }
-
-  getDescription(): string {
-    return this.description.join(', ');
+  // Виконання оплати
+  processPayment(amount: number): void {
+    if (!this.strategy) {
+      console.log('Стратегію оплати не встановлено');
+      return;
+    }
+    this.strategy.pay(amount);
   }
 }
 
 // Використання
-const bouquetArr: Flower[] = [new Rose(700), new Tulip(200), new Daisy(70)];
+const paymentProcessor = new PaymentProcessor();
 
-const priceCalculator = new PriceCalculatorVisitor();
-const descriptionVisitor = new DescriptionVisitor();
+// Оплата через кредитну картку
+paymentProcessor.setStrategy(new CreditCardPayment('4434567898765432'));
+paymentProcessor.processPayment(1000);
 
-function clientCode(bouquet: Flower[], visitor: FlowerVisitor) {
-  bouquet.forEach(flower => flower.accept(visitor));
-}
-
-clientCode(bouquetArr, descriptionVisitor);
-clientCode(bouquetArr, priceCalculator);
-
-console.log(`Total price of bouquet: ${priceCalculator.getTotalPrice()}$`);
-console.log(`Bouquet description: ${descriptionVisitor.getDescription()}.`);
-
-// interface Component {
-//   accept(visitor: Visitor): void;
-// }
-
-// class ConcreteComponentA implements Component {
-//   public accept(visitor: Visitor): void {
-//     visitor.visitConcreteComponentA(this);
-//   }
-
-//   public exclusiveMethodOfConcreteComponentA(): string {
-//     return 'A';
-//   }
-// }
-
-// class ConcreteComponentB implements Component {
-//   public accept(visitor: Visitor): void {
-//     visitor.visitConcreteComponentB(this);
-//   }
-
-//   public specialMethodOfConcreteComponentB(): string {
-//     return 'B';
-//   }
-// }
-
-// interface Visitor {
-//   visitConcreteComponentA(element: ConcreteComponentA): void;
-//   visitConcreteComponentB(element: ConcreteComponentB): void;
-// }
-
-// class ConcreteVisitor1 implements Visitor {
-//   public visitConcreteComponentA(element: ConcreteComponentA): void {
-//     console.log(`${element.exclusiveMethodOfConcreteComponentA()} + ConcreteVisitor1`);
-//   }
-
-//   public visitConcreteComponentB(element: ConcreteComponentB): void {
-//     console.log(`${element.specialMethodOfConcreteComponentB()} + ConcreteVisitor1`);
-//   }
-// }
-
-// class ConcreteVisitor2 implements Visitor {
-//   public visitConcreteComponentA(element: ConcreteComponentA): void {
-//     console.log(`${element.exclusiveMethodOfConcreteComponentA()} + ConcreteVisitor2`);
-//   }
-
-//   public visitConcreteComponentB(element: ConcreteComponentB): void {
-//     console.log(`${element.specialMethodOfConcreteComponentB()} + ConcreteVisitor2`);
-//   }
-// }
-
-// function clientCode(components: Component[], visitor: Visitor) {
-//   for (const component of components) {
-//     component.accept(visitor);
-//   }
-// }
-
-// const components = [new ConcreteComponentA(), new ConcreteComponentB()];
-
-// const visitor1 = new ConcreteVisitor1();
-// clientCode(components, visitor1);
-// console.log('');
-
-// const visitor2 = new ConcreteVisitor2();
-// clientCode(components, visitor2);
-
-// ===========Strategy================================
-// // Інтерфейс стратегії
-// interface PaymentStrategy {
-//   pay(amount: number): void;
-// }
-
-// // Реалізація стратегії оплати через кредитну картку
-// class CreditCardPayment implements PaymentStrategy {
-//   constructor(private readonly cardNumber: string) {}
-
-//   pay(amount: number): void {
-//     console.log(`Оплачено ${amount} грн за допомогою кредитної картки ${this.cardNumber}`);
-//   }
-// }
-
-// // Реалізація стратегії оплати готівкою
-// class CashPayment implements PaymentStrategy {
-//   pay(amount: number): void {
-//     console.log(`Оплачено ${amount} грн готівкою.`);
-//   }
-// }
-
-// // Контекст (користувач стратегії)
-// class PaymentProcessor {
-//   private strategy: PaymentStrategy | null = null;
-
-//   // Метод для встановлення стратегії
-//   setStrategy(strategy: PaymentStrategy): void {
-//     this.strategy = strategy;
-//   }
-
-//   // Виконання оплати
-//   processPayment(amount: number): void {
-//     if (!this.strategy) {
-//       console.log('Стратегію оплати не встановлено');
-//       return;
-//     }
-//     this.strategy.pay(amount);
-//   }
-// }
-
-// // Використання
-// const paymentProcessor = new PaymentProcessor();
-
-// // Оплата через кредитну картку
-// paymentProcessor.setStrategy(new CreditCardPayment('4434567898765432'));
-// paymentProcessor.processPayment(1000);
-
-// // Оплата готівкою
-// paymentProcessor.setStrategy(new CashPayment());
-// paymentProcessor.processPayment(700);
+// Оплата готівкою
+paymentProcessor.setStrategy(new CashPayment());
+paymentProcessor.processPayment(700);
 
 // ============Template Method============================
 // // Абстрактний клас із шаблонним методом
@@ -1015,3 +841,196 @@ console.log(`Bouquet description: ${descriptionVisitor.getDescription()}.`);
 // const wildBouquet = new WildBouquetMaker();
 // console.log('\nПриготування польового букета:');
 // wildBouquet.makeBouquet();
+
+// ================Visitor============================
+// // Інтерфейс для відвідувача
+// interface FlowerVisitor {
+//   visitRose(rose: Rose): void;
+//   visitTulip(tulip: Tulip): void;
+//   visitDaisy(daisy: Daisy): void;
+// }
+
+// // Інтерфейс для квітів
+// interface Flower {
+//   accept(visitor: FlowerVisitor): void;
+// }
+
+// // Конкретна квітка: Троянда
+// class Rose implements Flower {
+//   constructor(public price: number) {}
+
+//   getName(): string {
+//     return 'Rose';
+//   }
+
+//   accept(visitor: FlowerVisitor): void {
+//     visitor.visitRose(this);
+//   }
+// }
+
+// // Конкретна квітка: Тюльпан
+// class Tulip implements Flower {
+//   constructor(public price: number) {}
+
+//   getName(): string {
+//     return 'Tulip';
+//   }
+
+//   accept(visitor: FlowerVisitor): void {
+//     visitor.visitTulip(this);
+//   }
+// }
+
+// // Конкретна квітка: Ромашка
+// class Daisy implements Flower {
+//   constructor(public price: number) {}
+
+//   getName(): string {
+//     return 'Daisy';
+//   }
+
+//   accept(visitor: FlowerVisitor): void {
+//     visitor.visitDaisy(this);
+//   }
+// }
+
+// // Конкретний відвідувач для підрахунку вартості букета
+// class PriceCalculatorVisitor implements FlowerVisitor {
+//   private totalPrice = 0;
+
+//   visitRose(rose: Rose): void {
+//     this.totalPrice += rose.price;
+//   }
+
+//   visitTulip(tulip: Tulip): void {
+//     this.totalPrice += tulip.price;
+//   }
+
+//   visitDaisy(daisy: Daisy): void {
+//     this.totalPrice += daisy.price;
+//   }
+
+//   getTotalPrice(): number {
+//     return this.totalPrice;
+//   }
+// }
+
+// // Конкретний відвідувач для створення опису букета
+// class DescriptionVisitor implements FlowerVisitor {
+//   private readonly description: string[] = [];
+
+//   visitRose(rose: Rose): void {
+//     this.description.push(rose.getName());
+//   }
+
+//   visitTulip(tulip: Tulip): void {
+//     this.description.push(tulip.getName());
+//   }
+
+//   visitDaisy(daisy: Daisy): void {
+//     this.description.push(daisy.getName());
+//   }
+
+//   getDescription(): string {
+//     return this.description.join(', ');
+//   }
+// }
+
+// // Використання
+// const bouquetArr: Flower[] = [new Rose(700), new Tulip(200), new Daisy(70)];
+
+// const priceCalculator = new PriceCalculatorVisitor();
+// const descriptionVisitor = new DescriptionVisitor();
+
+// function clientCode(bouquet: Flower[], visitor: FlowerVisitor) {
+//   bouquet.forEach(flower => flower.accept(visitor));
+// }
+
+// clientCode(bouquetArr, descriptionVisitor);
+// clientCode(bouquetArr, priceCalculator);
+
+// console.log(`Загальна вартість букета: ${priceCalculator.getTotalPrice()}грн.`);
+// console.log(`Опис букета: ${descriptionVisitor.getDescription()}.`);
+
+// ================Mediator============================
+// // Інтерфейс Посередника
+// interface Mediator {
+//   notify(sender: object, message: string): void;
+// }
+
+// // Конкретний Посередник
+// class WebMediator implements Mediator {
+//   private readonly frontend: Frontend;
+//   private readonly backend: Backend;
+
+//   constructor(frontend: Frontend, backend: Backend) {
+//     this.frontend = frontend;
+//     this.frontend.setMediator(this);
+
+//     this.backend = backend;
+//     this.backend.setMediator(this);
+//   }
+
+//   notify(sender: object, message: string): void {
+//     switch (sender) {
+//       case this.frontend:
+//         console.log('Посередник: Frontend надсилає повідомлення до Backend.');
+//         this.backend.receiveMessage(message);
+//         break;
+//       case this.backend:
+//         console.log('Посередник: Backend надсилає повідомлення до Frontend.');
+//         this.frontend.receiveMessage(message);
+//         break;
+//       default:
+//         console.log('Посередник: Невідоме джерело повідомлення.');
+//     }
+//   }
+// }
+
+// // Базовий клас для компонентів
+// class BaseComponent {
+//   protected mediator: Mediator | null = null;
+
+//   setMediator(mediator: Mediator): void {
+//     this.mediator = mediator;
+//   }
+// }
+
+// // Конкретні компоненти
+// class Frontend extends BaseComponent {
+//   sendMessage(message: string): void {
+//     console.log(`Frontend: Sending message: "${message}"`);
+//     if (this.mediator) {
+//       this.mediator.notify(this, message);
+//     }
+//   }
+
+//   receiveMessage(message: string): void {
+//     console.log(`Frontend: Received message: "${message}"`);
+//   }
+// }
+
+// class Backend extends BaseComponent {
+//   sendMessage(message: string): void {
+//     console.log(`Backend: Sending message: "${message}"`);
+//     if (this.mediator) {
+//       this.mediator.notify(this, message);
+//     }
+//   }
+
+//   receiveMessage(message: string): void {
+//     console.log(`Backend: Received message: "${message}"`);
+//   }
+// }
+
+// // Використання
+// const frontend = new Frontend();
+// const backend = new Backend();
+
+// const mediator = new WebMediator(frontend, backend);
+
+// console.log('Клієнт: Frontend надсилає повідомлення.');
+// frontend.sendMessage('Hello from Frontend!');
+
+// console.log('\nКлієнт: Backend надсилає повідомлення.');
+// backend.sendMessage('Hello from Backend!');
