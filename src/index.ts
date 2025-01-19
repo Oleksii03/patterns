@@ -1,6 +1,6 @@
 // import './creational/creational';
 // import './structural/structural';
-// import './behavioral/behavioral';
+import './behavioral/behavioral';
 // ------------------------------------
 
 // ==================factory-method=========================
@@ -736,56 +736,56 @@
 // ==================================================
 
 // ===========Strategy================================
-// Інтерфейс стратегії
-interface PaymentStrategy {
-  pay(amount: number): void;
-}
+// // Інтерфейс стратегії
+// interface PaymentStrategy {
+//   pay(amount: number): void;
+// }
 
-// Реалізація стратегії оплати через кредитну картку
-class CreditCardPayment implements PaymentStrategy {
-  constructor(private readonly cardNumber: string) {}
+// // Реалізація стратегії оплати через кредитну картку
+// class CreditCardPayment implements PaymentStrategy {
+//   constructor(private readonly cardNumber: string) {}
 
-  pay(amount: number): void {
-    console.log(`Оплачено ${amount} грн за допомогою кредитної картки ${this.cardNumber}`);
-  }
-}
+//   pay(amount: number): void {
+//     console.log(`Оплачено ${amount} грн за допомогою кредитної картки ${this.cardNumber}`);
+//   }
+// }
 
-// Реалізація стратегії оплати готівкою
-class CashPayment implements PaymentStrategy {
-  pay(amount: number): void {
-    console.log(`Оплачено ${amount} грн готівкою.`);
-  }
-}
+// // Реалізація стратегії оплати готівкою
+// class CashPayment implements PaymentStrategy {
+//   pay(amount: number): void {
+//     console.log(`Оплачено ${amount} грн готівкою.`);
+//   }
+// }
 
-// Контекст (користувач стратегії)
-class PaymentProcessor {
-  private strategy: PaymentStrategy | null = null;
+// // Контекст (користувач стратегії)
+// class PaymentProcessor {
+//   private strategy: PaymentStrategy | null = null;
 
-  // Метод для встановлення стратегії
-  setStrategy(strategy: PaymentStrategy): void {
-    this.strategy = strategy;
-  }
+//   // Метод для встановлення стратегії
+//   setStrategy(strategy: PaymentStrategy): void {
+//     this.strategy = strategy;
+//   }
 
-  // Виконання оплати
-  processPayment(amount: number): void {
-    if (!this.strategy) {
-      console.log('Стратегію оплати не встановлено');
-      return;
-    }
-    this.strategy.pay(amount);
-  }
-}
+//   // Виконання оплати
+//   processPayment(amount: number): void {
+//     if (!this.strategy) {
+//       console.log('Стратегію оплати не встановлено');
+//       return;
+//     }
+//     this.strategy.pay(amount);
+//   }
+// }
 
-// Використання
-const paymentProcessor = new PaymentProcessor();
+// // Використання
+// const paymentProcessor = new PaymentProcessor();
 
-// Оплата через кредитну картку
-paymentProcessor.setStrategy(new CreditCardPayment('4434567898765432'));
-paymentProcessor.processPayment(1000);
+// // Оплата через кредитну картку
+// paymentProcessor.setStrategy(new CreditCardPayment('4434567898765432'));
+// paymentProcessor.processPayment(1000);
 
-// Оплата готівкою
-paymentProcessor.setStrategy(new CashPayment());
-paymentProcessor.processPayment(700);
+// // Оплата готівкою
+// paymentProcessor.setStrategy(new CashPayment());
+// paymentProcessor.processPayment(700);
 
 // ============Template Method============================
 // // Абстрактний клас із шаблонним методом
@@ -1034,3 +1034,71 @@ paymentProcessor.processPayment(700);
 
 // console.log('\nКлієнт: Backend надсилає повідомлення.');
 // backend.sendMessage('Hello from Backend!');
+
+// ==================Observer================================
+// Інтерфейс спостерігача (підписника)
+interface Observer {
+  update(flowerName: string): void;
+}
+
+// Інтерфейс суб'єкта (магазину)
+interface Subject {
+  addObserver(observer: Observer): void;
+  removeObserver(observer: Observer): void;
+  notifyObservers(flowerName: string): void;
+}
+
+// Реалізація суб'єкта (Інтернет-магазин)
+class FlowerShop implements Subject {
+  private observers: Observer[] = [];
+
+  public addObserver(observer: Observer): void {
+    this.observers.push(observer);
+  }
+
+  public removeObserver(observer: Observer): void {
+    this.observers = this.observers.filter(obs => obs !== observer);
+  }
+
+  public notifyObservers(flowerName: string): void {
+    for (const observer of this.observers) {
+      observer.update(flowerName);
+    }
+  }
+
+  public addNewFlower(flowerName: string): void {
+    console.log(`\nFlowerShop: Додано нову квітку - ${flowerName}`);
+    this.notifyObservers(flowerName);
+  }
+}
+
+// Реалізація спостерігача (Клієнта)
+class Customer implements Observer {
+  constructor(private readonly name: string) {}
+
+  public update(flowerName: string): void {
+    console.log(`${this.name}: Сповіщення - доступна нова квітка "${flowerName}"`);
+  }
+}
+
+// Використання
+const flowerShop = new FlowerShop();
+
+const customer1 = new Customer('Олена');
+const customer2 = new Customer('Максим');
+const customer3 = new Customer('Анна');
+
+// Підписуємо клієнтів
+flowerShop.addObserver(customer1);
+flowerShop.addObserver(customer2);
+flowerShop.addObserver(customer3);
+
+// Додаємо нові квіти
+flowerShop.addNewFlower('Троянда');
+flowerShop.addNewFlower('Орхідея');
+
+// Відписуємо одного з клієнтів
+flowerShop.removeObserver(customer2);
+
+// Додаємо ще одну квітку
+flowerShop.addNewFlower('Лілія');
