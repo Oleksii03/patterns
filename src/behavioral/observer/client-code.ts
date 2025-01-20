@@ -21,3 +21,4 @@ flowerShop.removeObserver(customer2);
 
 // Додаємо ще одну квітку
 flowerShop.addNewFlower('Лілія');
+console.log('\n');

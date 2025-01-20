@@ -1,6 +1,6 @@
 // import './creational/creational';
 // import './structural/structural';
-import './behavioral/behavioral';
+// import './behavioral/behavioral';
 // ------------------------------------
 
 // ==================factory-method=========================
@@ -1036,69 +1036,165 @@ import './behavioral/behavioral';
 // backend.sendMessage('Hello from Backend!');
 
 // ==================Observer================================
-// Інтерфейс спостерігача (підписника)
-interface Observer {
-  update(flowerName: string): void;
-}
+// // Інтерфейс спостерігача (підписника)
+// interface Observer {
+//   update(flowerName: string): void;
+// }
 
-// Інтерфейс суб'єкта (магазину)
-interface Subject {
-  addObserver(observer: Observer): void;
-  removeObserver(observer: Observer): void;
-  notifyObservers(flowerName: string): void;
-}
+// // Інтерфейс суб'єкта (магазину)
+// interface Subject {
+//   addObserver(observer: Observer): void;
+//   removeObserver(observer: Observer): void;
+//   notifyObservers(flowerName: string): void;
+// }
 
-// Реалізація суб'єкта (Інтернет-магазин)
-class FlowerShop implements Subject {
-  private observers: Observer[] = [];
+// // Реалізація суб'єкта (Інтернет-магазин)
+// class FlowerShop implements Subject {
+//   private observers: Observer[] = [];
 
-  public addObserver(observer: Observer): void {
-    this.observers.push(observer);
-  }
+//   public addObserver(observer: Observer): void {
+//     this.observers.push(observer);
+//   }
 
-  public removeObserver(observer: Observer): void {
-    this.observers = this.observers.filter(obs => obs !== observer);
-  }
+//   public removeObserver(observer: Observer): void {
+//     this.observers = this.observers.filter(obs => obs !== observer);
+//   }
 
-  public notifyObservers(flowerName: string): void {
-    for (const observer of this.observers) {
-      observer.update(flowerName);
-    }
-  }
+//   public notifyObservers(flowerName: string): void {
+//     for (const observer of this.observers) {
+//       observer.update(flowerName);
+//     }
+//   }
 
-  public addNewFlower(flowerName: string): void {
-    console.log(`\nFlowerShop: Додано нову квітку - ${flowerName}`);
-    this.notifyObservers(flowerName);
-  }
-}
+//   public addNewFlower(flowerName: string): void {
+//     console.log(`\nFlowerShop: Додано нову квітку - ${flowerName}`);
+//     this.notifyObservers(flowerName);
+//   }
+// }
 
-// Реалізація спостерігача (Клієнта)
-class Customer implements Observer {
-  constructor(private readonly name: string) {}
+// // Реалізація спостерігача (Клієнта)
+// class Customer implements Observer {
+//   constructor(private readonly name: string) {}
 
-  public update(flowerName: string): void {
-    console.log(`${this.name}: Сповіщення - доступна нова квітка "${flowerName}"`);
-  }
-}
+//   public update(flowerName: string): void {
+//     console.log(`${this.name}: Сповіщення - доступна нова квітка "${flowerName}"`);
+//   }
+// }
 
-// Використання
-const flowerShop = new FlowerShop();
+// // Використання
+// const flowerShop = new FlowerShop();
 
-const customer1 = new Customer('Олена');
-const customer2 = new Customer('Максим');
-const customer3 = new Customer('Анна');
+// const customer1 = new Customer('Олена');
+// const customer2 = new Customer('Максим');
+// const customer3 = new Customer('Анна');
 
-// Підписуємо клієнтів
-flowerShop.addObserver(customer1);
-flowerShop.addObserver(customer2);
-flowerShop.addObserver(customer3);
+// // Підписуємо клієнтів
+// flowerShop.addObserver(customer1);
+// flowerShop.addObserver(customer2);
+// flowerShop.addObserver(customer3);
 
-// Додаємо нові квіти
-flowerShop.addNewFlower('Троянда');
-flowerShop.addNewFlower('Орхідея');
+// // Додаємо нові квіти
+// flowerShop.addNewFlower('Троянда');
+// flowerShop.addNewFlower('Орхідея');
 
-// Відписуємо одного з клієнтів
-flowerShop.removeObserver(customer2);
+// // Відписуємо одного з клієнтів
+// flowerShop.removeObserver(customer2);
 
-// Додаємо ще одну квітку
-flowerShop.addNewFlower('Лілія');
+// // Додаємо ще одну квітку
+// flowerShop.addNewFlower('Лілія');
+
+// =================State====================
+// // Інтерфейс стану гри
+// interface GameState {
+//   startRound(game: CSGOGame): void;
+//   play(game: CSGOGame): void;
+//   endRound(game: CSGOGame): void;
+// }
+
+// // Стан: Очікування гравців
+// class WaitingForPlayersState implements GameState {
+//   startRound(game: CSGOGame): void {
+//     console.log('Гравці підключені. Починаємо раунд!');
+//     game.setState(new RoundInProgressState());
+//   }
+
+//   play(): void {
+//     console.log('Не можна почати гру без усіх гравців.');
+//   }
+
+//   endRound(): void {
+//     console.log('Гра ще не розпочалася.');
+//   }
+// }
+
+// // Стан: Гра триває
+// class RoundInProgressState implements GameState {
+//   startRound(): void {
+//     console.log('Раунд запущений!');
+//   }
+
+//   play(game: CSGOGame): void {
+//     console.log('Гравці виконують завдання.');
+//     // Емулюємо завершення раунду
+//     const winner = Math.random() > 0.5 ? 'Терористи' : 'Контртерористи';
+
+//     console.log(`${winner} перемогли у цьому раунді!`);
+//     game.setState(new RoundEndState());
+//   }
+
+//   endRound(): void {
+//     console.log('Гра ще триває. Завершіть раунд!');
+//   }
+// }
+
+// // Стан: Кінець раунду
+// class RoundEndState implements GameState {
+//   startRound(game: CSGOGame): void {
+//     console.log('Починаємо новий раунд!');
+//     game.setState(new RoundInProgressState());
+//   }
+
+//   play(): void {
+//     console.log('Раунд завершено. Почніть новий раунд.');
+//   }
+
+//   endRound(): void {
+//     console.log('Раунд вже завершено.');
+//   }
+// }
+
+// // Контекст: Гра CS:GO
+// class CSGOGame {
+//   private state: GameState;
+
+//   constructor() {
+//     this.state = new WaitingForPlayersState();
+//   }
+
+//   setState(state: GameState): void {
+//     this.state = state;
+//   }
+
+//   startRound(): void {
+//     this.state.startRound(this);
+//   }
+
+//   play(): void {
+//     this.state.play(this);
+//   }
+
+//   endRound(): void {
+//     this.state.endRound(this);
+//   }
+// }
+
+// // Використання
+// const game = new CSGOGame();
+
+// game.play(); // Не можна почати гру без усіх гравців.
+// game.startRound(); // Гравці підключені. Починаємо раунд!
+// game.play(); // Раунд у розпалі! Гравці виконують завдання. (визначається переможець)
+// game.play(); // Раунд завершено. Почніть новий раунд.
+// game.startRound(); // Починаємо новий раунд!
+
+// ==================Iterator================================
