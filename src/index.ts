@@ -1198,3 +1198,103 @@
 // game.startRound(); // Починаємо новий раунд!
 
 // ==================Iterator================================
+// Інтерфейс ітератора
+interface Iterator<T> {
+  next(): IteratorResult<T>;
+  hasNext(): boolean;
+}
+
+// Інтерфейс колекції
+interface FlowerCollection {
+  createIterator(): Iterator<Flower>;
+}
+
+// Інтерфейс товару
+interface Flower {
+  name: string;
+  price: number;
+  category: string;
+}
+
+// Конкретний ітератор для квітів
+class FlowerIterator implements Iterator<Flower> {
+  private index: number = 0;
+
+  constructor(private readonly flowers: Flower[]) {}
+
+  next(): IteratorResult<Flower> {
+    if (this.hasNext()) {
+      return {
+        done: false,
+        value: this.flowers[this.index++],
+      };
+    }
+    return {
+      done: true,
+      value: undefined,
+    };
+  }
+
+  hasNext(): boolean {
+    return this.index < this.flowers.length;
+  }
+}
+
+// Колекція "Букети"
+class BouquetCollection implements FlowerCollection {
+  private readonly bouquets: Flower[] = [];
+
+  addBouquet(name: string, price: number): void {
+    this.bouquets.push({ name, price, category: 'Букет' });
+  }
+
+  createIterator(): Iterator<Flower> {
+    return new FlowerIterator(this.bouquets);
+  }
+}
+
+// Колекція "Кімнатні рослини"
+class IndoorPlantCollection implements FlowerCollection {
+  private readonly plants: Flower[] = [];
+
+  addPlant(name: string, price: number): void {
+    this.plants.push({ name, price, category: 'Кімнатна рослина' });
+  }
+
+  createIterator(): Iterator<Flower> {
+    return new FlowerIterator(this.plants);
+  }
+}
+
+// Клас для виведення товарів
+class FlowerShop {
+  constructor(private readonly collections: FlowerCollection[]) {}
+
+  displayAllFlowers(): void {
+    this.collections.forEach(collection => {
+      const iterator = collection.createIterator();
+
+      let result = iterator.next();
+      while (!result.done) {
+        const flower = result.value;
+        console.log(`${flower.name} (${flower.category}) - ${flower.price.toFixed(2)}₴`);
+        result = iterator.next();
+      }
+      console.log('\n');
+    });
+  }
+}
+
+// Використання
+const bouquets = new BouquetCollection();
+
+bouquets.addBouquet('Романтичний букет', 499.99);
+bouquets.addBouquet('Весільний букет', 895.99);
+
+const indoorPlants = new IndoorPlantCollection();
+
+indoorPlants.addPlant('Фікус', 197.99);
+indoorPlants.addPlant('Орхідея', 293.99);
+
+const flowerShop = new FlowerShop([bouquets, indoorPlants]);
+flowerShop.displayAllFlowers();
