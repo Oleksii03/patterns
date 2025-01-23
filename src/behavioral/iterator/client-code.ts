@@ -15,3 +15,5 @@ indoorPlants.addPlant('Орхідея', 293.99);
 
 const flowerShop = new FlowerShop([bouquets, indoorPlants]);
 flowerShop.displayAllFlowers();
+
+console.log('----------------------------');

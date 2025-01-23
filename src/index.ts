@@ -1198,103 +1198,193 @@
 // game.startRound(); // Починаємо новий раунд!
 
 // ==================Iterator================================
-// Інтерфейс ітератора
-interface Iterator<T> {
-  next(): IteratorResult<T>;
-  hasNext(): boolean;
+// // Інтерфейс ітератора
+// interface Iterator<T> {
+//   next(): IteratorResult<T>;
+//   hasNext(): boolean;
+// }
+
+// // Інтерфейс колекції
+// interface FlowerCollection {
+//   createIterator(): Iterator<Flower>;
+// }
+
+// // Інтерфейс товару
+// interface Flower {
+//   name: string;
+//   price: number;
+//   category: string;
+// }
+
+// // Конкретний ітератор для квітів
+// class FlowerIterator implements Iterator<Flower> {
+//   private index: number = 0;
+
+//   constructor(private readonly flowers: Flower[]) {}
+
+//   next(): IteratorResult<Flower> {
+//     if (this.hasNext()) {
+//       return {
+//         done: false,
+//         value: this.flowers[this.index++],
+//       };
+//     }
+//     return {
+//       done: true,
+//       value: undefined,
+//     };
+//   }
+
+//   hasNext(): boolean {
+//     return this.index < this.flowers.length;
+//   }
+// }
+
+// // Колекція "Букети"
+// class BouquetCollection implements FlowerCollection {
+//   private readonly bouquets: Flower[] = [];
+
+//   addBouquet(name: string, price: number): void {
+//     this.bouquets.push({ name, price, category: 'Букет' });
+//   }
+
+//   createIterator(): Iterator<Flower> {
+//     return new FlowerIterator(this.bouquets);
+//   }
+// }
+
+// // Колекція "Кімнатні рослини"
+// class IndoorPlantCollection implements FlowerCollection {
+//   private readonly plants: Flower[] = [];
+
+//   addPlant(name: string, price: number): void {
+//     this.plants.push({ name, price, category: 'Кімнатна рослина' });
+//   }
+
+//   createIterator(): Iterator<Flower> {
+//     return new FlowerIterator(this.plants);
+//   }
+// }
+
+// // Клас для виведення товарів
+// class FlowerShop {
+//   constructor(private readonly collections: FlowerCollection[]) {}
+
+//   displayAllFlowers(): void {
+//     this.collections.forEach(collection => {
+//       const iterator = collection.createIterator();
+
+//       let result = iterator.next();
+//       while (!result.done) {
+//         const flower = result.value;
+//         console.log(`${flower.name} (${flower.category}) - ${flower.price.toFixed(2)}₴`);
+//         result = iterator.next();
+//       }
+//       console.log('\n');
+//     });
+//   }
+// }
+
+// // Використання
+// const bouquets = new BouquetCollection();
+
+// bouquets.addBouquet('Романтичний букет', 499.99);
+// bouquets.addBouquet('Весільний букет', 895.99);
+
+// const indoorPlants = new IndoorPlantCollection();
+
+// indoorPlants.addPlant('Фікус', 197.99);
+// indoorPlants.addPlant('Орхідея', 293.99);
+
+// const flowerShop = new FlowerShop([bouquets, indoorPlants]);
+// flowerShop.displayAllFlowers();
+
+// ===============Chain of Command=====================
+// Інтерфейс для обробників
+interface Middleware {
+  setNext(handler: Middleware): Middleware;
+  handle(request: HttpRequest): string | null;
 }
 
-// Інтерфейс колекції
-interface FlowerCollection {
-  createIterator(): Iterator<Flower>;
+// Клас для запитів
+class HttpRequest {
+  constructor(
+    public user: string | null,
+    public token: string | null,
+    public data: any
+  ) {}
 }
 
-// Інтерфейс товару
-interface Flower {
-  name: string;
-  price: number;
-  category: string;
-}
+// Базовий клас обробника
+abstract class AbstractMiddleware implements Middleware {
+  private next: Middleware | null = null;
 
-// Конкретний ітератор для квітів
-class FlowerIterator implements Iterator<Flower> {
-  private index: number = 0;
+  public setNext(handler: Middleware): Middleware {
+    this.next = handler;
+    return handler;
+  }
 
-  constructor(private readonly flowers: Flower[]) {}
-
-  next(): IteratorResult<Flower> {
-    if (this.hasNext()) {
-      return {
-        done: false,
-        value: this.flowers[this.index++],
-      };
+  public handle(request: HttpRequest): string | null {
+    if (this.next) {
+      return this.next.handle(request);
     }
-    return {
-      done: true,
-      value: undefined,
-    };
-  }
-
-  hasNext(): boolean {
-    return this.index < this.flowers.length;
+    return null;
   }
 }
 
-// Колекція "Букети"
-class BouquetCollection implements FlowerCollection {
-  private readonly bouquets: Flower[] = [];
-
-  addBouquet(name: string, price: number): void {
-    this.bouquets.push({ name, price, category: 'Букет' });
-  }
-
-  createIterator(): Iterator<Flower> {
-    return new FlowerIterator(this.bouquets);
+// Конкретні обробники
+class AuthMiddleware extends AbstractMiddleware {
+  public handle(request: HttpRequest): string | null {
+    if (!request.user || !request.token) {
+      return 'AuthMiddleware: Аутентифікація не вдалася.';
+    }
+    console.log('AuthMiddleware: Аутентифікація пройшла успішно.');
+    return super.handle(request);
   }
 }
 
-// Колекція "Кімнатні рослини"
-class IndoorPlantCollection implements FlowerCollection {
-  private readonly plants: Flower[] = [];
-
-  addPlant(name: string, price: number): void {
-    this.plants.push({ name, price, category: 'Кімнатна рослина' });
-  }
-
-  createIterator(): Iterator<Flower> {
-    return new FlowerIterator(this.plants);
+class PermissionMiddleware extends AbstractMiddleware {
+  public handle(request: HttpRequest): string | null {
+    if (request.user !== 'admin') {
+      return 'PermissionMiddleware: Доступ заборонений.';
+    }
+    console.log('PermissionMiddleware: Доступ дозволений.');
+    return super.handle(request);
   }
 }
 
-// Клас для виведення товарів
-class FlowerShop {
-  constructor(private readonly collections: FlowerCollection[]) {}
-
-  displayAllFlowers(): void {
-    this.collections.forEach(collection => {
-      const iterator = collection.createIterator();
-
-      let result = iterator.next();
-      while (!result.done) {
-        const flower = result.value;
-        console.log(`${flower.name} (${flower.category}) - ${flower.price.toFixed(2)}₴`);
-        result = iterator.next();
-      }
-      console.log('\n');
-    });
+class ValidationMiddleware extends AbstractMiddleware {
+  public handle(request: HttpRequest): string | null {
+    if (!request.data || typeof request.data !== 'object') {
+      return 'ValidationMiddleware: Невірні дані.';
+    }
+    console.log('ValidationMiddleware: Дані правильні.');
+    return super.handle(request);
   }
 }
 
 // Використання
-const bouquets = new BouquetCollection();
+const auth = new AuthMiddleware();
+const permission = new PermissionMiddleware();
+const validation = new ValidationMiddleware();
 
-bouquets.addBouquet('Романтичний букет', 499.99);
-bouquets.addBouquet('Весільний букет', 895.99);
+// Створюємо ланцюг
+auth.setNext(permission).setNext(validation);
 
-const indoorPlants = new IndoorPlantCollection();
+// Тестуємо з різними запитами
+const requests = [
+  new HttpRequest(null, null, { key: 'value' }), // Неавторизований запит
+  new HttpRequest('user', 'token123', null), // Немає даних
+  new HttpRequest('admin', 'token123', { key: 'value' }), // Успішний запит
+];
 
-indoorPlants.addPlant('Фікус', 197.99);
-indoorPlants.addPlant('Орхідея', 293.99);
-
-const flowerShop = new FlowerShop([bouquets, indoorPlants]);
-flowerShop.displayAllFlowers();
+for (const request of requests) {
+  console.log('Обробка нового запиту...');
+  const result = auth.handle(request);
+  if (result) {
+    console.log(result);
+  } else {
+    console.log('Запит оброблений успішно.');
+  }
+  console.log('----------------------------');
+}
