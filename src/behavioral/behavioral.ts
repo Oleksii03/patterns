@@ -5,3 +5,4 @@ import './observer/observer';
 import './state/state';
 import './iterator/iterator';
 import './chain-of-command/chain-of-command';
+import './сommand/сommand';

@@ -1300,91 +1300,164 @@
 // flowerShop.displayAllFlowers();
 
 // ===============Chain of Command=====================
-// Інтерфейс для обробників
-interface Middleware {
-  setNext(handler: Middleware): Middleware;
-  handle(request: HttpRequest): string | null;
+// // Інтерфейс для обробників
+// interface Middleware {
+//   setNext(handler: Middleware): Middleware;
+//   handle(request: HttpRequest): string | null;
+// }
+
+// // Клас для запитів
+// class HttpRequest {
+//   constructor(
+//     public user: string | null,
+//     public token: string | null,
+//     public data: any
+//   ) {}
+// }
+
+// // Базовий клас обробника
+// abstract class AbstractMiddleware implements Middleware {
+//   private next: Middleware | null = null;
+
+//   public setNext(handler: Middleware): Middleware {
+//     this.next = handler;
+//     return handler;
+//   }
+
+//   public handle(request: HttpRequest): string | null {
+//     if (this.next) {
+//       return this.next.handle(request);
+//     }
+//     return null;
+//   }
+// }
+
+// // Конкретні обробники
+// class AuthMiddleware extends AbstractMiddleware {
+//   public handle(request: HttpRequest): string | null {
+//     if (!request.user || !request.token) {
+//       return 'AuthMiddleware: Аутентифікація не вдалася.';
+//     }
+//     console.log('AuthMiddleware: Аутентифікація пройшла успішно.');
+//     return super.handle(request);
+//   }
+// }
+
+// class PermissionMiddleware extends AbstractMiddleware {
+//   public handle(request: HttpRequest): string | null {
+//     if (request.user !== 'admin') {
+//       return 'PermissionMiddleware: Доступ заборонений.';
+//     }
+//     console.log('PermissionMiddleware: Доступ дозволений.');
+//     return super.handle(request);
+//   }
+// }
+
+// class ValidationMiddleware extends AbstractMiddleware {
+//   public handle(request: HttpRequest): string | null {
+//     if (!request.data || typeof request.data !== 'object') {
+//       return 'ValidationMiddleware: Невірні дані.';
+//     }
+//     console.log('ValidationMiddleware: Дані правильні.');
+//     return super.handle(request);
+//   }
+// }
+
+// // Використання
+// const auth = new AuthMiddleware();
+// const permission = new PermissionMiddleware();
+// const validation = new ValidationMiddleware();
+
+// // Створюємо ланцюг
+// auth.setNext(permission).setNext(validation);
+
+// // Тестуємо з різними запитами
+// const requests = [
+//   new HttpRequest(null, null, { key: 'value' }), // Неавторизований запит
+//   new HttpRequest('user', 'token123', null), // Немає даних
+//   new HttpRequest('admin', 'token123', { key: 'value' }), // Успішний запит
+// ];
+
+// for (const request of requests) {
+//   console.log('Обробка нового запиту...');
+//   const result = auth.handle(request);
+//   if (result) {
+//     console.log(result);
+//   } else {
+//     console.log('Запит оброблений успішно.');
+//   }
+//   console.log('----------------------------');
+// }
+
+// ==================Command============================
+// Інтерфейс Команди
+interface Command {
+  execute(): void;
 }
 
-// Клас для запитів
-class HttpRequest {
-  constructor(
-    public user: string | null,
-    public token: string | null,
-    public data: any
-  ) {}
-}
-
-// Базовий клас обробника
-abstract class AbstractMiddleware implements Middleware {
-  private next: Middleware | null = null;
-
-  public setNext(handler: Middleware): Middleware {
-    this.next = handler;
-    return handler;
+// Мопед
+class Moped {
+  startEngine() {
+    console.log('Мопед Альфа: двигун запущено!');
   }
 
-  public handle(request: HttpRequest): string | null {
-    if (this.next) {
-      return this.next.handle(request);
-    }
-    return null;
+  stopEngine() {
+    console.log('Мопед Альфа: двигун вимкнено!');
   }
 }
 
-// Конкретні обробники
-class AuthMiddleware extends AbstractMiddleware {
-  public handle(request: HttpRequest): string | null {
-    if (!request.user || !request.token) {
-      return 'AuthMiddleware: Аутентифікація не вдалася.';
-    }
-    console.log('AuthMiddleware: Аутентифікація пройшла успішно.');
-    return super.handle(request);
+// Команда для запуску двигуна
+class StartEngineCommand implements Command {
+  private readonly moped: Moped;
+
+  constructor(moped: Moped) {
+    this.moped = moped;
+  }
+
+  execute(): void {
+    this.moped.startEngine();
   }
 }
 
-class PermissionMiddleware extends AbstractMiddleware {
-  public handle(request: HttpRequest): string | null {
-    if (request.user !== 'admin') {
-      return 'PermissionMiddleware: Доступ заборонений.';
-    }
-    console.log('PermissionMiddleware: Доступ дозволений.');
-    return super.handle(request);
+// Команда для зупинки двигуна
+class StopEngineCommand implements Command {
+  private readonly moped: Moped;
+
+  constructor(moped: Moped) {
+    this.moped = moped;
+  }
+
+  execute(): void {
+    this.moped.stopEngine();
   }
 }
 
-class ValidationMiddleware extends AbstractMiddleware {
-  public handle(request: HttpRequest): string | null {
-    if (!request.data || typeof request.data !== 'object') {
-      return 'ValidationMiddleware: Невірні дані.';
+// Відправник (Invoker)
+class RemoteControl {
+  private command: Command | null = null;
+
+  setCommand(command: Command): void {
+    this.command = command;
+  }
+
+  pressButton(): void {
+    if (this.command) {
+      this.command.execute();
+    } else {
+      console.log('Команда не встановлена.');
     }
-    console.log('ValidationMiddleware: Дані правильні.');
-    return super.handle(request);
   }
 }
 
 // Використання
-const auth = new AuthMiddleware();
-const permission = new PermissionMiddleware();
-const validation = new ValidationMiddleware();
+const moped = new Moped();
+const startEngine = new StartEngineCommand(moped);
+const stopEngine = new StopEngineCommand(moped);
 
-// Створюємо ланцюг
-auth.setNext(permission).setNext(validation);
+const remote = new RemoteControl();
 
-// Тестуємо з різними запитами
-const requests = [
-  new HttpRequest(null, null, { key: 'value' }), // Неавторизований запит
-  new HttpRequest('user', 'token123', null), // Немає даних
-  new HttpRequest('admin', 'token123', { key: 'value' }), // Успішний запит
-];
+remote.setCommand(startEngine);
+remote.pressButton(); // Output: Мопед Альфа: двигун запущено!
 
-for (const request of requests) {
-  console.log('Обробка нового запиту...');
-  const result = auth.handle(request);
-  if (result) {
-    console.log(result);
-  } else {
-    console.log('Запит оброблений успішно.');
-  }
-  console.log('----------------------------');
-}
+remote.setCommand(stopEngine);
+remote.pressButton(); // Output: Мопед Альфа: двигун вимкнено!

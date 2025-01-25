@@ -195,3 +195,95 @@
 
 // console.log(newUsers);
 // console.log(users);
+
+// const users = [
+//   {
+//     id: 1,
+//     name: 'Святослав',
+//     age: 25,
+//     email: 'svyatoslav@example.com',
+//     city: 'Київ',
+//     friends: [2, 3, 4],
+//   },
+//   {
+//     id: 2,
+//     name: 'Злата',
+//     age: 32,
+//     email: 'vlada@example.com',
+//     city: 'Київ',
+//     friends: [1, 5, 6, 8],
+//   },
+//   {
+//     id: 3,
+//     name: 'Дима',
+//     age: 28,
+//     email: 'dima@example.com',
+//     city: 'Київ',
+//     friends: [],
+//   },
+//   {
+//     id: 4,
+//     name: 'Алексей',
+//     age: 35,
+//     email: 'maxim@example.com',
+//     city: 'Харків',
+//     friends: [1, 2, 3, 4, 1, 5, 6],
+//   },
+//   {
+//     id: 5,
+//     name: 'Сергей',
+//     age: 29,
+//     email: 'vlad@example.com',
+//     city: 'Харків',
+//     friends: [2, 3, 4],
+//   },
+//   {
+//     id: 6,
+//     name: 'Артём',
+//     age: 41,
+//     email: 'artem@example.com',
+//     city: 'Харків',
+//     friends: [2, 3, 4, 5],
+//   },
+//   {
+//     id: 7,
+//     name: 'Андрей',
+//     age: 36,
+//     email: 'andrey@example.com',
+//     city: 'Херсон',
+//     friends: [2, 3, 4, 5, 7],
+//   },
+//   {
+//     id: 8,
+//     name: 'Родион',
+//     age: 45,
+//     email: 'denis@example.com',
+//     city: 'Херсон',
+//     friends: [],
+//   },
+//   {
+//     id: 9,
+//     name: 'Іван',
+//     age: 27,
+//     email: 'ivan@example.com',
+//     city: 'Херсон',
+//     friends: [],
+//   },
+//   {
+//     id: 10,
+//     name: 'Марія',
+//     age: 31,
+//     email: 'maria@example.com',
+//     city: 'Рівне',
+//     friends: [],
+//   },
+// ];
+
+// const x = users.reduce((acc, el, i, arr) => {
+//   const e = new Set(el.friends);
+
+//   el.friends = [...e];
+//   return users;
+// }, users);
+
+// console.log(x);
