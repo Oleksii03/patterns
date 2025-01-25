@@ -287,3 +287,28 @@
 // }, users);
 
 // console.log(x);
+
+// ----------Making Six Toast---------------
+// function sixToast(num) {
+//   const template = 6;
+//   if (num === template) return 0;
+
+//   if (num > template) {
+//     return num - template;
+//   } else {
+//     return template - num;
+//   }
+// }
+
+// console.log(sixToast(6));
+// console.log(sixToast(17));
+// console.log(sixToast(3));
+// -------------------------
+
+// function litres(time) {
+//   return Math.floor(time * 0.5);
+// }
+
+// console.log(litres(11.8));
+// console.log(litres(1787));
+// console.log(litres(0));

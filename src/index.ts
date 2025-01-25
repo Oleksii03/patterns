@@ -1390,74 +1390,182 @@
 // }
 
 // ==================Command============================
-// Інтерфейс Команди
-interface Command {
-  execute(): void;
+// // Інтерфейс Команди
+// interface Command {
+//   execute(): void;
+// }
+
+// // Мопед
+// class Moped {
+//   startEngine() {
+//     console.log('Мопед Альфа: двигун запущено!');
+//   }
+
+//   stopEngine() {
+//     console.log('Мопед Альфа: двигун вимкнено!');
+//   }
+// }
+
+// // Команда для запуску двигуна
+// class StartEngineCommand implements Command {
+//   private readonly moped: Moped;
+
+//   constructor(moped: Moped) {
+//     this.moped = moped;
+//   }
+
+//   execute(): void {
+//     this.moped.startEngine();
+//   }
+// }
+
+// // Команда для зупинки двигуна
+// class StopEngineCommand implements Command {
+//   private readonly moped: Moped;
+
+//   constructor(moped: Moped) {
+//     this.moped = moped;
+//   }
+
+//   execute(): void {
+//     this.moped.stopEngine();
+//   }
+// }
+
+// // Відправник (Invoker)
+// class RemoteControl {
+//   private command: Command | null = null;
+
+//   setCommand(command: Command): void {
+//     this.command = command;
+//   }
+
+//   pressButton(): void {
+//     if (this.command) {
+//       this.command.execute();
+//     } else {
+//       console.log('Команда не встановлена.');
+//     }
+//   }
+// }
+
+// // Використання
+// const moped = new Moped();
+// const startEngine = new StartEngineCommand(moped);
+// const stopEngine = new StopEngineCommand(moped);
+
+// const remote = new RemoteControl();
+
+// remote.setCommand(startEngine);
+// remote.pressButton(); // Output: Мопед Альфа: двигун запущено!
+
+// remote.setCommand(stopEngine);
+// remote.pressButton(); // Output: Мопед Альфа: двигун вимкнено!
+
+// =====================Memento=================================
+// Memento: Зберігає стан гравця
+class PlayerMemento {
+  constructor(
+    private readonly health: number,
+    private readonly armor: number,
+    private readonly position: string
+  ) {}
+
+  getState(): { health: number; armor: number; position: string } {
+    return {
+      health: this.health,
+      armor: this.armor,
+      position: this.position,
+    };
+  }
 }
 
-// Мопед
-class Moped {
-  startEngine() {
-    console.log('Мопед Альфа: двигун запущено!');
+// Originator: Гравець
+class Player {
+  private health: number = 100;
+  private armor: number = 50;
+  private position: string = 'Spawn';
+
+  setState(health: number, armor: number, position: string): void {
+    this.health = health;
+    this.armor = armor;
+    this.position = position;
+    console.log(
+      `\n Player: Стан змінено - Health: ${this.health}, Armor: ${this.armor}, Position: ${this.position}`
+    );
   }
 
-  stopEngine() {
-    console.log('Мопед Альфа: двигун вимкнено!');
+  getState(): { health: number; armor: number; position: string } {
+    return Object.freeze({
+      health: this.health,
+      armor: this.armor,
+      position: this.position,
+    });
+  }
+
+  save(): PlayerMemento {
+    console.log(`Player: Зберігаю стан...`);
+    return new PlayerMemento(this.health, this.armor, this.position);
+  }
+
+  restore(memento: PlayerMemento): void {
+    const state = memento.getState();
+    this.health = state.health;
+    this.armor = state.armor;
+    this.position = state.position;
+    console.log(
+      `Player: Відновлено стан - Health: ${this.health}, Armor: ${this.armor}, Position: ${this.position}`
+    );
   }
 }
 
-// Команда для запуску двигуна
-class StartEngineCommand implements Command {
-  private readonly moped: Moped;
+// Caretaker: Відповідає за управління збереженнями
+class GameHistory {
+  private readonly history: PlayerMemento[] = [];
 
-  constructor(moped: Moped) {
-    this.moped = moped;
+  constructor(private readonly player: Player) {}
+
+  backup(): void {
+    console.log(`GameHistory: Зберігаю стан гравця...`);
+    this.history.push(this.player.save());
   }
 
-  execute(): void {
-    this.moped.startEngine();
-  }
-}
-
-// Команда для зупинки двигуна
-class StopEngineCommand implements Command {
-  private readonly moped: Moped;
-
-  constructor(moped: Moped) {
-    this.moped = moped;
-  }
-
-  execute(): void {
-    this.moped.stopEngine();
-  }
-}
-
-// Відправник (Invoker)
-class RemoteControl {
-  private command: Command | null = null;
-
-  setCommand(command: Command): void {
-    this.command = command;
-  }
-
-  pressButton(): void {
-    if (this.command) {
-      this.command.execute();
-    } else {
-      console.log('Команда не встановлена.');
+  undo(): void {
+    if (this.history.length === 0) {
+      console.log(`GameHistory: Немає збережень для відновлення.`);
+      return;
     }
+
+    const memento = this.history.pop();
+    console.log(`\n GameHistory: Відновлюю стан гравця...`);
+    this.player.restore(memento!);
+  }
+
+  showHistory(): void {
+    console.log(`GameHistory: Історія станів:`);
+    this.history.forEach((memento, index) => {
+      const state = memento.getState();
+      console.log(
+        `  Стан #${index + 1} - Health: ${state.health}, Armor: ${state.armor}, Position: ${state.position}`
+      );
+    });
   }
 }
 
-// Використання
-const moped = new Moped();
-const startEngine = new StartEngineCommand(moped);
-const stopEngine = new StopEngineCommand(moped);
+// Приклад використання
+const player = new Player();
+const gameHistory = new GameHistory(player);
 
-const remote = new RemoteControl();
+player.setState(80, 45, 'Mid');
+gameHistory.backup();
 
-remote.setCommand(startEngine);
-remote.pressButton(); // Output: Мопед Альфа: двигун запущено!
+player.setState(60, 30, 'B Site');
 
-remote.setCommand(stopEngine);
-remote.pressButton(); // Output: Мопед Альфа: двигун вимкнено!
+gameHistory.backup();
+
+player.setState(30, 10, 'A Site');
+
+gameHistory.showHistory();
+gameHistory.undo();
+gameHistory.undo();
+gameHistory.undo();

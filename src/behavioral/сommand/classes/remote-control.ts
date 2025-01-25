@@ -1,3 +1,5 @@
+import { Command } from '../interfaces/ICommand';
+
 export class RemoteControl {
   private command: Command | null = null;
 
