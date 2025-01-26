@@ -312,3 +312,13 @@
 // console.log(litres(11.8));
 // console.log(litres(1787));
 // console.log(litres(0));
+
+// const cannonsReady = gunners => {
+//   return Object.values(gunners).every(val => val === 'aye') ? 'Fire!' : 'Shiver me timbers!';
+// };
+
+// let a = { Mike: 'aye', Joe: 'aye', Johnson: 'aye', Peter: 'aye' };
+// let b = { Mike: 'aye', Joe: 'nay', Johnson: 'aye', Peter: 'aye' };
+
+// console.log(cannonsReady(a));
+// console.log(cannonsReady(b));
